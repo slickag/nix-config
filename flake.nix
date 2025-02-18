@@ -22,19 +22,35 @@
     homebrew-cask = {
       url = "github:homebrew/homebrew-cask";
       flake = false;
-    }; 
+    };
+    homebrew-cloudflare = {
+      url = "github:cloudflare/homebrew-cloudflare";
+      flake = false;
+    };
+    homebrew-fuse = {
+      url = "github:gromgit/homebrew-fuse";
+      flake = false;
+    };
+    homebrew-services = {
+      url = "github:homebrew/homebrew-services";
+      flake = false;
+    };
+    homebrew-knickknacks = {
+      url = "github:slickag/homebrew-knickknacks";
+      flake = false;
+    };
     disko = {
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    secrets = {
-      url = "git+ssh://git@github.com/dustinlyons/nix-secrets.git";
-      flake = false;
-    };
+    # secrets = {
+      # url = "git+ssh://git@github.com/slickag/nix-secrets.git";
+      # flake = false;
+    # };
   };
-  outputs = { self, darwin, nix-homebrew, homebrew-bundle, homebrew-core, homebrew-cask, home-manager, nixpkgs, disko, agenix, secrets } @inputs:
+  outputs = { self, darwin, nix-homebrew, homebrew-bundle, homebrew-core, homebrew-cask, homebrew-cloudflare, homebrew-fuse, homebrew-services, homebrew-knickknacks, home-manager, nixpkgs, disko, agenix } @inputs:
     let
-      user = "dustin";
+      user = "AG";
       linuxSystems = [ "x86_64-linux" "aarch64-linux" ];
       darwinSystems = [ "aarch64-darwin" "x86_64-darwin" ];
       forAllSystems = f: nixpkgs.lib.genAttrs (linuxSystems ++ darwinSystems) f;
@@ -42,7 +58,7 @@
         default = with pkgs; mkShell {
           nativeBuildInputs = with pkgs; [ bashInteractive git age age-plugin-yubikey ];
           shellHook = with pkgs; ''
-            export EDITOR=vim
+            export EDITOR=nano
           '';
         };
       };
@@ -80,10 +96,10 @@
           path = ./templates/starter;
           description = "Starter configuration";
         };
-        starter-with-secrets = {
-          path = ./templates/starter-with-secrets;
-          description = "Starter configuration with secrets";
-        };
+        # starter-with-secrets = {
+          # path = ./templates/starter-with-secrets;
+          # description = "Starter configuration with secrets";
+        # };
       };
       devShells = forAllSystems devShell;
       apps = nixpkgs.lib.genAttrs linuxSystems mkLinuxApps // nixpkgs.lib.genAttrs darwinSystems mkDarwinApps;
@@ -98,10 +114,16 @@
               nix-homebrew = {
                 inherit user;
                 enable = true;
+                # Apple Silicon Only: Also install Homebrew under the default Intel prefix for Rosetta 2
+                # enableRosetta = true;
                 taps = {
                   "homebrew/homebrew-core" = homebrew-core;
                   "homebrew/homebrew-cask" = homebrew-cask;
                   "homebrew/homebrew-bundle" = homebrew-bundle;
+                  "cloudflare/homebrew-cloudflare" = homebrew-cloudflare;
+                  "gromgit/homebrew-fuse" = homebrew-fuse;
+                  "homebrew/homebrew-services" = homebrew-services;
+                  "slickag/homebrew-knickknacks" = homebrew-knickknacks;
                 };
                 mutableTaps = false;
                 autoMigrate = true;

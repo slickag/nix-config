@@ -3,6 +3,7 @@ name: Update Flake Lock
 on:
   schedule:
     - cron: '0 23 * * 0' # Every Sunday at 11:00 PM
+  workflow_dispatch:
 
 jobs:
   check-build:
@@ -21,13 +22,10 @@ jobs:
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@main
 
-      - name: Setup Cache
-        uses: DeterminateSystems/magic-nix-cache-action@main
-
       - name: Initalize flake
         run: |
           mkdir -p my-config && cd my-config
-          nix flake --extra-experimental-features 'nix-command flakes' init -t github:dustinlyons/nixos-config#starter
+          nix flake --extra-experimental-features 'nix-command flakes' init -t github:slickag/nix-config#starter
 
       - name: Apply CI User Info
         run: |
@@ -50,7 +48,7 @@ jobs:
 
           # Traverse directories and replace tokens in each Nix file
           export -f replace_tokens
-          cd /home/runner/work/nixos-config/nixos-config/my-config
+          cd /home/runner/work/nix-config/nix-config/my-config
           find . -type f -exec bash -c 'replace_tokens "$0"' {} \;
 
           echo "$USERNAME" > /tmp/username.txt

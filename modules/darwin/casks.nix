@@ -2,37 +2,42 @@ _:
 
 [
   # Development Tools
-  "homebrew/cask/docker"
-  "claude"
-  "insomnia"
-  "tableplus"
-  "ngrok"
-  "postico"
-  "visual-studio-code"
-  "wireshark"
+  # "homebrew/cask/docker"
+  # "claude"
+  # "insomnia"
+  # "tableplus"
+  # "ngrok"
+  # "postico"
+  # "visual-studio-code"
+  # "wireshark"
 
   # Communication Tools
-  "discord"
-  "loom"
-  "slack"
-  "telegram"
-  "zoom"
+  # "discord"
+  # "loom"
+  # "slack"
+  # "telegram"
+  # "zoom"
 
   # Utility Tools
-  "appcleaner"
-  "syncthing"
+  # "appcleaner"
+  # "syncthing"
+  "1password-cli"
+  "1password@beta"
+  "font-meslo-lg-nerd-font"
+  "iterm2@beta"
+  "rar"
 
   # Entertainment Tools
-  "steam"
-  "vlc"
+  # "steam"
+  # "vlc"
 
   # Productivity Tools
-  "raycast"
-  "asana"
+  # "raycast"
+  # "asana"
 
   # Browsers
-  "google-chrome"
+  # "google-chrome"
 
   # AI
-  "diffusionbee"
+  # "diffusionbee"
 ]

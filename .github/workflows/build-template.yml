@@ -22,13 +22,10 @@ jobs:
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@main
 
-      - name: Setup Cache
-        uses: DeterminateSystems/magic-nix-cache-action@main
-
       - name: Initialize Nix Flake
         run: |
           mkdir -p my-config && cd my-config
-          nix flake --extra-experimental-features 'nix-command flakes' init -t github:dustinlyons/nixos-config#${{ inputs.template }}
+          nix flake --extra-experimental-features 'nix-command flakes' init -t github:slickag/nix-config#${{ inputs.template }}
 
       - name: Apply CI User Info
         run: |
@@ -51,18 +48,18 @@ jobs:
 
           # Traverse directories and replace tokens in each Nix file
           export -f replace_tokens
-          cd /home/runner/work/nixos-config/nixos-config/my-config
+          cd /home/runner/work/nix-config/nix-config/my-config
           find . -type f -exec bash -c 'replace_tokens "$0"' {} \;
 
           echo "$USERNAME" > /tmp/username.txt
 
       - name: Build Nix Flake
         run: |
-          cd /home/runner/work/nixos-config/nixos-config/my-config
+          cd /home/runner/work/nix-config/nix-config/my-config
           git add .
 
           echo "Building Flake..."
-          if nix build --extra-experimental-features 'nix-command flakes' /home/runner/work/nixos-config/nixos-config/my-config#nixosConfigurations."${{ inputs.arch }}".config.system.build.toplevel; then
+          if nix build --extra-experimental-features 'nix-command flakes' /home/runner/work/nix-config/nix-config/my-config#nixosConfigurations."${{ inputs.arch }}".config.system.build.toplevel; then
             echo "success=true" >> $GITHUB_ENV
           else
             echo "Build failed, listing flake.lock for debugging:"
@@ -74,4 +71,3 @@ jobs:
       - name: Determine build result
         id: build-result
         run: echo "success=${{ env.success }}" >> $GITHUB_OUTPUT
-

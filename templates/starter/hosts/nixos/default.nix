@@ -25,7 +25,7 @@ let user = "%USER%";
   };
 
   # Set your time zone.
-  time.timeZone = "America/New_York";
+  time.timeZone = "America/Phoenix";
 
   # The global useDHCP flag is deprecated, therefore explicitly set to false here.
   # Per-interface useDHCP will be mandatory in the future, so this generated config
@@ -63,7 +63,7 @@ let user = "%USER%";
     zsh.enable = true;
   };
 
-  services = { 
+  services = {
     xserver = {
       enable = true;
 
@@ -107,22 +107,22 @@ let user = "%USER%";
     openssh.enable = true;
 
     # Sync state between machines
-    syncthing = {
-      enable = true;
-      openDefaultPorts = true;
-      dataDir = "/home/${user}/.local/share/syncthing";
-      configDir = "/home/${user}/.config/syncthing";
-      user = "${user}";
-      group = "users";
-      guiAddress = "127.0.0.1:8384";
-      overrideFolders = true;
-      overrideDevices = true;
+    # syncthing = {
+      # enable = true;
+      # openDefaultPorts = true;
+      # dataDir = "/home/${user}/.local/share/syncthing";
+      # configDir = "/home/${user}/.config/syncthing";
+      # user = "${user}";
+      # group = "users";
+      # guiAddress = "127.0.0.1:8384";
+      # overrideFolders = true;
+      # overrideDevices = true;
 
-      settings = {
-        devices = {};
-        options.globalAnnounceEnabled = false; # Only sync on LAN
-      };
-    };
+      # settings = {
+        # devices = {};
+        # options.globalAnnounceEnabled = false; # Only sync on LAN
+      # };
+    # };
 
     # Enable CUPS to print documents
     # printing.enable = true;
@@ -223,16 +223,16 @@ let user = "%USER%";
     tumbler.enable = true; # Thumbnail support for images
 
     # Emacs runs as a daemon
-    emacs = {
-      enable = true;
-      package = pkgs.emacs-unstable;
-    };
+    # emacs = {
+      # enable = true;
+      # package = pkgs.emacs-unstable;
+    # };
   };
 
   # When emacs builds from no cache, it exceeds the 90s timeout default
-  systemd.user.services.emacs = {
-    serviceConfig.TimeoutStartSec = "7min";
-  };
+  # systemd.user.services.emacs = {
+    # serviceConfig.TimeoutStartSec = "7min";
+  # };
 
   # Enable sound
   # sound.enable = true;
@@ -292,8 +292,8 @@ let user = "%USER%";
 
   fonts.packages = with pkgs; [
     dejavu_fonts
-    emacs-all-the-icons-fonts
-    feather-font # from overlay
+    # emacs-all-the-icons-fonts
+    # feather-font # from overlay
     jetbrains-mono
     font-awesome
     noto-fonts

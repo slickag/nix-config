@@ -1,10 +1,10 @@
 { config, inputs, lib, pkgs, agenix, ... }:
 
-let user = "dustin";
+let user = "AG";
     keys = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOk8iAnIaa1deoc7jw8YACPNVka1ZFJxhnU4G74TmS+p" ]; in
 {
   imports = [
-    ../../modules/nixos/secrets.nix
+    # ../../modules/nixos/secrets.nix
     ../../modules/nixos/disk-config.nix
     ../../modules/shared
     agenix.nixosModules.default
@@ -239,18 +239,18 @@ let user = "dustin";
     openssh.enable = true;
 
     # My editor runs as a daemon
-    emacs = {
-      enable = true;
-      package = pkgs.emacs-unstable;
-    };
+    # emacs = {
+      # enable = true;
+      # package = pkgs.emacs-unstable;
+    # };
 
     gvfs.enable = true; # Mount, trash, and other functionalities
     tumbler.enable = true; # Thumbnail support for images
   };
 
-  systemd.user.services.emacs = {
-    serviceConfig.TimeoutStartSec = "7min";
-  };
+  # systemd.user.services.emacs = {
+    # serviceConfig.TimeoutStartSec = "7min";
+  # };
 
   # Enable sound
   sound.enable = true;
@@ -312,8 +312,8 @@ let user = "dustin";
 
   fonts.packages = with pkgs; [
     dejavu_fonts
-    emacs-all-the-icons-fonts
-    feather-font # from overlay
+    # emacs-all-the-icons-fonts
+    # feather-font # from overlay
     jetbrains-mono
     font-awesome
     noto-fonts
