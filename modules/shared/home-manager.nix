@@ -111,7 +111,7 @@ let name = "John Faust";
 
   # vim = {
     # enable = true;
-    # plugins = with pkgs.vimPlugins; [ vim-airline vim-airline-themes copilot-vim vim-startify vim-tmux-navigator ];
+    # plugins = with pkgs.vimPlugins; [ vim-airline vim-airline-themes vim-tmux-navigator ];
     # settings = { ignorecase = true; };
     # extraConfig = ''
       # "" General
@@ -303,9 +303,11 @@ let name = "John Faust";
 
   tmux = {
     enable = true;
+    shell = "${pkgs.zsh}/bin/zsh";
+    # sensibleOnTop = false;
     # plugins = with pkgs.tmuxPlugins; [
       # vim-tmux-navigator
-      # sensible
+      # sensible  # Re-enabled with workaround below
       # yank
       # prefix-highlight
       # {
@@ -338,9 +340,6 @@ let name = "John Faust";
     # escapeTime = 10;
     # historyLimit = 50000;
     # extraConfig = ''
-      # # Default shell
-      # set-option -g default-shell /run/current-system/sw/bin/zsh
-
       # # Remove Vim mode delays
       # set -g focus-events on
 
@@ -385,6 +384,10 @@ let name = "John Faust";
       # bind-key -T copy-mode-vi 'C-k' select-pane -U
       # bind-key -T copy-mode-vi 'C-l' select-pane -R
       # bind-key -T copy-mode-vi 'C-\' select-pane -l
+      
+      # # Darwin-specific fix for tmux 3.5a with sensible plugin
+      # # This MUST be at the very end of the config
+      # set -g default-command "$SHELL"
       # '';
-  };
+    };
 }
