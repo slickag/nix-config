@@ -27,14 +27,10 @@ let name = "John Faust";
           file = "p10k.zsh";
       }
     ];
-    initExtraFirst = ''
+    initContent = lib.mkBefore ''
       if [[ -f /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]]; then
         . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
         . /nix/var/nix/profiles/default/etc/profile.d/nix.sh
-      fi
-
-      if [[ "$(uname)" == "Linux" ]]; then
-        alias pbcopy='xclip -selection clipboard'
       fi
 
       # Define variables for directories
@@ -50,20 +46,19 @@ let name = "John Faust";
       # Ripgrep alias
       # alias search='rg -p --glob "!node_modules/*" --glob "!vendor/*" "$@"'
 
+      # Claude GUI
+      alias claude-desktop='nohup claude-desktop > /dev/null 2>&1 & disown'
+
       # Emacs is my editor
       # export ALTERNATE_EDITOR=""
       # export EDITOR="emacsclient -t"
       # export VISUAL="emacsclient -c -a emacs"
-
       # e() {
           # emacsclient -t "$@"
       # }
 
       # Laravel Artisan
       # alias art='php artisan'
-
-      # PHP Deployer
-      # alias deploy='dep deploy'
 
       # Use difftastic, syntax-aware diffing
       alias diff=difft
@@ -76,9 +71,6 @@ let name = "John Faust";
       alias lt='ls -T'
       alias sudo='sudo '
       alias tree='tree -a -I .git --dirsfirst'
-
-      # Reboot into my dual boot Windows partition
-      # alias windows='systemctl reboot --boot-loader-entry=auto-windows'
     '';
   };
 

@@ -8,7 +8,6 @@ let user = "%USER%"; in
     ../../modules/shared
   ];
 
-  # Setup user, packages, programs
   nix = {
     package = pkgs.nix;
 
@@ -30,11 +29,6 @@ let user = "%USER%"; in
     '';
   };
 
-  # Turn off NIX_PATH warnings now that we're using flakes
-  system.checks.verifyNixPath = false;
-
-  security.pam.enableSudoTouchIdAuth = true;
-
   # Load configuration that is shared across systems
   environment.systemPackages = with pkgs; [
     # emacs-unstable
@@ -53,7 +47,10 @@ let user = "%USER%"; in
     # StandardOutPath = "/tmp/emacs.out.log";
   # };
 
+  security.pam.enableSudoTouchIdAuth = true;
   system = {
+    checks.verifyNixPath = false;
+    primaryUser = user;
     stateVersion = 4;
 
     defaults = {

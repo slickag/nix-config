@@ -1,46 +1,33 @@
 { agenix, config, pkgs, ... }:
-
 let user = "AG"; in
 {
-
   imports = [
     # ../../modules/darwin/secrets.nix
     ../../modules/darwin/home-manager.nix
     ../../modules/shared
     agenix.darwinModules.default
   ];
-
   # Setup user, packages, programs
   nix = {
     package = pkgs.nix;
-
     settings = {
       trusted-users = [ "@admin" "${user}" ];
       substituters = [ "https://nix-community.cachix.org" "https://cache.nixos.org" ];
       trusted-public-keys = [ "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=" ];
     };
-
     gc = {
       automatic = true;
       interval = { Weekday = 0; Hour = 2; Minute = 0; };
       options = "--delete-older-than 30d";
     };
-
     # Turn this on to make command line easier
     extraOptions = ''
       experimental-features = nix-command flakes
     '';
   };
-
-  # Turn off NIX_PATH warnings now that we're using flakes
-  system.checks.verifyNixPath = false;
-
-  security.pam.enableSudoTouchIdAuth = true;
-
   # Load configuration that is shared across systems
   environment.systemPackages = with pkgs; [
-    # emacs-unstable
-    vim
+    # emacs
     agenix.packages."${pkgs.system}".default
   ] ++ (import ../../modules/shared/packages.nix { inherit pkgs; });
 
@@ -60,20 +47,21 @@ let user = "AG"; in
     # };
   # };
 
+  security.pam.enableSudoTouchIdAuth = true;
   system = {
+    # Turn off NIX_PATH warnings now that we're using flakes
+    checks.verifyNixPath = false;
+    primaryUser = user;
     stateVersion = 4;
-
     defaults = {
       LaunchServices = {
         LSQuarantine = false;
       };
-
       CustomSystemPreferences = {
         "com.apple.timemachine.HelperAgent" = {
           DoNotAskAgainToSetUpNewDisks = true;
         };
       };
-
       NSGlobalDomain = {
         AppleShowAllExtensions = true;
         AppleShowAllFiles = true;
@@ -92,7 +80,6 @@ let user = "AG"; in
         "com.apple.sound.beep.feedback" = 0;
         "com.apple.swipescrolldirection" = false;
       };
-
       dock = {
         autohide = false;
         show-recents = true;
@@ -101,7 +88,6 @@ let user = "AG"; in
         orientation = "bottom";
         tilesize = 48;
       };
-
       finder = {
         AppleShowAllExtensions = true;
         AppleShowAllFiles = true;
@@ -111,15 +97,12 @@ let user = "AG"; in
         _FXSortFoldersFirst = true;
         _FXSortFoldersFirstOnDesktop = true;
       };
-
       magicmouse.MouseButtonMode = "TwoButton";
-
       # trackpad = {
         # Clicking = true;
         # TrackpadThreeFingerDrag = true;
       # };
     };
-
     # keyboard = {
       # enableKeyMapping = true;
       # remapCapsLockToControl = true;

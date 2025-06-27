@@ -37,7 +37,4 @@ _:
 
   # Browsers
   # "google-chrome"
-
-  # AI
-  # "diffusionbee"
 ]
