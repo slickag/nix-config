@@ -7,7 +7,7 @@
     agenix.url = "github:ryantm/agenix";
     claude-desktop = {
       url = "github:k3d3/claude-desktop-linux-flake";
-      inputs = { 
+      inputs = {
         nixpkgs.follows = "nixpkgs";
         flake-utils.follows = "flake-utils";
       };
@@ -61,7 +61,7 @@
       # flake = false;
     # };
   };
-  outputs = { self, darwin, nix-homebrew, homebrew-bundle, homebrew-core, homebrew-cask, homebrew-cloudflare, homebrew-fuse, homebrew-services, homebrew-knickknacks, home-manager, nixpkgs, disko, agenix } @inputs:
+  outputs = { self, darwin, claude-desktop, nix-homebrew, homebrew-bundle, homebrew-core, homebrew-cask, homebrew-cloudflare, homebrew-fuse, homebrew-services, homebrew-knickknacks, home-manager, plasma-manager, nixpkgs, flake-utils, disko, agenix } @inputs:
     let
       user = "AG";
       linuxSystems = [ "x86_64-linux" "aarch64-linux" ];
@@ -154,7 +154,7 @@
             disko.nixosModules.disko
             home-manager.nixosModules.home-manager {
               home-manager = {
-                sharedModules = [ plasma-manager.homeManagerModules.plasma-manager ]; 
+                sharedModules = [ plasma-manager.homeManagerModules.plasma-manager ];
                 useGlobalPkgs = true;
                 useUserPackages = true;
                 users.${user} = { config, pkgs, lib, ... }:
