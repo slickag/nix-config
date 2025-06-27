@@ -47,7 +47,6 @@ let user = "%USER%"; in
     # StandardOutPath = "/tmp/emacs.out.log";
   # };
 
-  security.pam.enableSudoTouchIdAuth = true;
   system = {
     checks.verifyNixPath = false;
     primaryUser = user;

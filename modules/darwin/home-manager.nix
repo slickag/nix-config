@@ -41,13 +41,13 @@ in
       cleanup = "zap";
       upgrade = true;
     };
-    # masApps = {
+    masApps = {
       "developer" = 640199958;
       # "hidden-bar" = 1452453066;
       "previewtext" = 1660037028;
       "testflight" = 899247664;
       # "wireguard" = 1451685025;
-    # };
+    };
   };
 
   home-manager = {

@@ -47,7 +47,6 @@ let user = "AG"; in
     # };
   # };
 
-  security.pam.enableSudoTouchIdAuth = true;
   system = {
     # Turn off NIX_PATH warnings now that we're using flakes
     checks.verifyNixPath = false;
