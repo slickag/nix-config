@@ -2,9 +2,20 @@ _:
 
 [
   "coreutils"
+  "git-lfs"
+  "ipatool"
+  "ipsw"
   "mas"
   {
-    name = "rclone";
+    name = "git";
+    args = [ "HEAD" ];
+  }
+  # {
+  #   name = "nanorc";
+  #   args = [ "HEAD" ];
+  # }
+  {
+    name = "upx";
     args = [ "HEAD" ];
   }
   {
@@ -13,6 +24,10 @@ _:
   }
   {
     name = "slickag/knickknacks/forgejo";
+    args = [ "HEAD" ];
+  }
+  {
+    name = "slickag/knickknacks/rclone";
     args = [ "HEAD" ];
   }
 ]

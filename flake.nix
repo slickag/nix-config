@@ -4,6 +4,7 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
     home-manager.url = "github:nix-community/home-manager";
+    mac-app-util.url = "github:hraban/mac-app-util";
     agenix.url = "github:ryantm/agenix";
     claude-desktop = {
       url = "github:k3d3/claude-desktop-linux-flake";
@@ -24,10 +25,10 @@
     nix-homebrew = {
       url = "github:zhaofengli-wip/nix-homebrew";
     };
-    homebrew-bundle = {
-      url = "github:homebrew/homebrew-bundle";
-      flake = false;
-    };
+    # homebrew-bundle = {
+    #   url = "github:homebrew/homebrew-bundle";
+    #   flake = false;
+    # };
     homebrew-core = {
       url = "github:homebrew/homebrew-core";
       flake = false;
@@ -40,14 +41,18 @@
       url = "github:cloudflare/homebrew-cloudflare";
       flake = false;
     };
-    homebrew-fuse = {
-      url = "github:gromgit/homebrew-fuse";
+    # homebrew-fuse = {
+    #   url = "github:gromgit/homebrew-fuse";
+    #   flake = false;
+    # };
+    homebrew-macos-fuse-t = {
+      url = "github:macos-fuse-t/homebrew-cask";
       flake = false;
-    };
-    homebrew-services = {
-      url = "github:homebrew/homebrew-services";
-      flake = false;
-    };
+    }
+    # homebrew-services = {
+    #   url = "github:homebrew/homebrew-services";
+    #   flake = false;
+    # };
     homebrew-knickknacks = {
       url = "github:slickag/homebrew-knickknacks";
       flake = false;
@@ -61,7 +66,7 @@
       # flake = false;
     # };
   };
-  outputs = { self, darwin, claude-desktop, nix-homebrew, homebrew-bundle, homebrew-core, homebrew-cask, homebrew-cloudflare, homebrew-fuse, homebrew-services, homebrew-knickknacks, home-manager, plasma-manager, nixpkgs, flake-utils, disko, agenix } @inputs:
+  outputs = { self, darwin, claude-desktop, nix-homebrew, homebrew-core, homebrew-cask, homebrew-cloudflare, homebrew-macos-fuse-t, homebrew-knickknacks, home-manager, mac-app-util, plasma-manager, nixpkgs, flake-utils, disko, agenix } @inputs:
     let
       user = "AG";
       linuxSystems = [ "x86_64-linux" "aarch64-linux" ];
@@ -121,7 +126,22 @@
           inherit system;
           specialArgs = inputs // { inherit user; };
           modules = [
+            mac-app-util.darwinModules.default
             home-manager.darwinModules.home-manager
+            (
+              { pkgs, config, inputs, ... }:
+              {
+                # To enable it for all users:
+                home-manager.sharedModules = [
+                  mac-app-util.homeManagerModules.default
+                ];
+                # Or to enable it for a single user only:
+                # home-manager.users.foobar.imports = [
+                  #...
+                  # mac-app-util.homeManagerModules.default
+                # ];
+              }
+            )
             nix-homebrew.darwinModules.nix-homebrew
             {
               nix-homebrew = {
@@ -132,10 +152,10 @@
                 taps = {
                   "homebrew/homebrew-core" = homebrew-core;
                   "homebrew/homebrew-cask" = homebrew-cask;
-                  "homebrew/homebrew-bundle" = homebrew-bundle;
+                  # "homebrew/homebrew-bundle" = homebrew-bundle;
                   "cloudflare/homebrew-cloudflare" = homebrew-cloudflare;
-                  "gromgit/homebrew-fuse" = homebrew-fuse;
-                  "homebrew/homebrew-services" = homebrew-services;
+                  "macos-fuse-t/homebrew-cask" = homebrew-macos-fuse-t;
+                  # "homebrew/homebrew-services" = homebrew-services;
                   "slickag/homebrew-knickknacks" = homebrew-knickknacks;
                 };
                 mutableTaps = false;

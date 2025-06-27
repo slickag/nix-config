@@ -29,6 +29,7 @@ with pkgs; [
   btop # System monitor and process viewer
 
   # C
+  colima
   # coreutils # Basic file/text/shell utilities
 
   # D
@@ -58,6 +59,7 @@ with pkgs; [
   # I
   iftop # Network bandwidth monitor
   # imagemagick # Image manipulation toolkit
+  iperf
 
   # J
   # jetbrains.phpstorm # PHP IDE
@@ -69,9 +71,12 @@ with pkgs; [
 
   # L
   # libfido2 # FIDO2 library
+  lla
   lsd
 
   # M
+  mkalias
+  moar
   # myPHP # Custom PHP with extensions
   # myPython # Custom Python with packages
 
@@ -99,9 +104,11 @@ with pkgs; [
 
   # R
   # ripgrep # Fast text search tool
+  rsync
 
   # S
   # slack # Team communication app
+  socat
   # sqlite # SQL database engine
 
   # T
@@ -112,8 +119,8 @@ with pkgs; [
   tree # Directory tree viewer
 
   # U
-  unrar # RAR archive extractor
-  unzip # ZIP archive extractor
+  # unrar # RAR archive extractor
+  # unzip # ZIP archive extractor
   # uv # Python package installer
 
   # W

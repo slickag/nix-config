@@ -37,8 +37,13 @@ in
     casks = pkgs.callPackage ./casks.nix {};
     caskArgs.no_quarantine = true;
     onActivation.cleanup = "zap";
+    onActivation.upgrade = true;
+    onActivation.autoUpdate = true;
     # masApps = {
+      "developer" = 640199958;
       # "hidden-bar" = 1452453066;
+      "previewtext" = 1660037028
+      "testflight" = 899247664;
       # "wireguard" = 1451685025;
     # };
   };
