@@ -1,27 +1,27 @@
 { pkgs, ... }:
 let
-  myPython = pkgs.python3.withPackages (ps: with ps; [
-    slpp
-    pip
-    rich
-    virtualenv
-    black
-  ]);
+  # myPython = pkgs.python3.withPackages (ps: with ps; [
+    # slpp
+    # pip
+    # rich
+    # virtualenv
+    # black
+  # ]);
 
-  myPHP = pkgs.php82.withExtensions ({ enabled, all }: enabled ++ (with all; [
-    xdebug
-  ]));
+  # myPHP = pkgs.php82.withExtensions ({ enabled, all }: enabled ++ (with all; [
+    # xdebug
+  # ]));
 
   myFonts = import ./fonts.nix { inherit pkgs; };
 in
 with pkgs; [
   # A
-  act # Run Github actions locally
+  # act # Run Github actions locally
   age # File encryption tool
-  age-plugin-yubikey # YubiKey plugin for age encryption
-  alacritty # GPU-accelerated terminal emulator
-  aspell # Spell checker
-  aspellDicts.en # English dictionary for aspell
+  # age-plugin-yubikey # YubiKey plugin for age encryption
+  # alacritty # GPU-accelerated terminal emulator
+  # aspell # Spell checker
+  # aspellDicts.en # English dictionary for aspell
 
   # B
   bash-completion # Bash completion scripts
@@ -29,24 +29,27 @@ with pkgs; [
   btop # System monitor and process viewer
 
   # C
-  coreutils # Basic file/text/shell utilities
+  # coreutils # Basic file/text/shell utilities
 
   # D
-  direnv # Environment variable management per directory
+  # direnv # Environment variable management per directory
   difftastic # Structural diff tool
   du-dust # Disk usage analyzer
 
+  # E
+  eza
+
   # F
   fd # Fast find alternative
-  ffmpeg # Multimedia framework
+  # ffmpeg # Multimedia framework
   fzf # Fuzzy finder
 
   # G
-  gcc # GNU Compiler Collection
+  # gcc # GNU Compiler Collection
   gh # GitHub CLI
-  glow # Markdown renderer for terminal
-  gnupg # GNU Privacy Guard
-  gopls # Go language server
+  # glow # Markdown renderer for terminal
+  # gnupg # GNU Privacy Guard
+  # gopls # Go language server
 
   # H
   htop # Interactive process viewer
@@ -54,61 +57,64 @@ with pkgs; [
 
   # I
   iftop # Network bandwidth monitor
-  imagemagick # Image manipulation toolkit
+  # imagemagick # Image manipulation toolkit
 
   # J
-  jetbrains.phpstorm # PHP IDE
+  # jetbrains.phpstorm # PHP IDE
   jpegoptim # JPEG optimizer
-  jq # JSON processor
+  # jq # JSON processor
 
   # K
-  killall # Kill processes by name
+  # killall # Kill processes by name
 
   # L
-  libfido2 # FIDO2 library
+  # libfido2 # FIDO2 library
+  lsd
 
   # M
-  myPHP # Custom PHP with extensions
-  myPython # Custom Python with packages
+  # myPHP # Custom PHP with extensions
+  # myPython # Custom Python with packages
 
   # N
+  nano
+  nanorc
   neofetch # System information tool
-  ngrok # Secure tunneling service
-  nodejs # JavaScript runtime
-  nodePackages.live-server # Development server with live reload
-  nodePackages.nodemon # Node.js file watcher
-  nodePackages.npm # Node package manager
-  nodePackages.prettier # Code formatter
+  # ngrok # Secure tunneling service
+  # nodejs # JavaScript runtime
+  # nodePackages.live-server # Development server with live reload
+  # nodePackages.nodemon # Node.js file watcher
+  # nodePackages.npm # Node package manager
+  # nodePackages.prettier # Code formatter
 
   # O
-  openssh # SSH client and server
+  # openssh # SSH client and server
 
   # P
-  pandoc # Document converter
-  php82Packages.composer # PHP dependency manager
-  php82Packages.deployer # PHP deployment tool
-  php82Packages.php-cs-fixer # PHP code style fixer
-  phpunit # PHP testing framework
+  # pandoc # Document converter
+  # php82Packages.composer # PHP dependency manager
+  # php82Packages.deployer # PHP deployment tool
+  # php82Packages.php-cs-fixer # PHP code style fixer
+  # phpunit # PHP testing framework
   pngquant # PNG compression tool
 
   # R
-  ripgrep # Fast text search tool
+  # ripgrep # Fast text search tool
 
   # S
-  slack # Team communication app
-  sqlite # SQL database engine
+  # slack # Team communication app
+  # sqlite # SQL database engine
 
   # T
-  terraform # Infrastructure as code tool
-  terraform-ls # Terraform language server
-  tflint # Terraform linter
+  # terraform # Infrastructure as code tool
+  # terraform-ls # Terraform language server
+  # tflint # Terraform linter
   tmux # Terminal multiplexer
   tree # Directory tree viewer
 
   # U
   unrar # RAR archive extractor
   unzip # ZIP archive extractor
-  uv # Python package installer
+  # uv # Python package installer
 
   # W
   wget # File downloader
