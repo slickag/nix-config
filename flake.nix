@@ -48,7 +48,7 @@
     homebrew-macos-fuse-t = {
       url = "github:macos-fuse-t/homebrew-cask";
       flake = false;
-    }
+    };
     # homebrew-services = {
     #   url = "github:homebrew/homebrew-services";
     #   flake = false;

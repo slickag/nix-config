@@ -36,13 +36,15 @@ in
     brews = pkgs.callPackage ./brews.nix {};
     casks = pkgs.callPackage ./casks.nix {};
     caskArgs.no_quarantine = true;
-    onActivation.cleanup = "zap";
-    onActivation.upgrade = true;
-    onActivation.autoUpdate = true;
+    onActivation = {
+      autoUpdate = true;
+      cleanup = "zap";
+      upgrade = true;
+    };
     # masApps = {
       "developer" = 640199958;
       # "hidden-bar" = 1452453066;
-      "previewtext" = 1660037028
+      "previewtext" = 1660037028;
       "testflight" = 899247664;
       # "wireguard" = 1451685025;
     # };
