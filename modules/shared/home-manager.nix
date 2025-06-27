@@ -5,49 +5,49 @@ let name = "John Faust";
     email = "45057319+slickag@users.noreply.github.com"; in
 {
 
-  direnv = {
-      enable = true;
-      enableZshIntegration = true;
-      nix-direnv.enable = true;
-    };
+  # direnv = {
+    # enable = true;
+    # enableZshIntegration = true;
+    # nix-direnv.enable = true;
+  # };
 
   zsh = {
     enable = true;
     autocd = false;
     # cdpath = [ "~/.local/share/src" ];
-    plugins = [
-      {
-          name = "powerlevel10k";
-          src = pkgs.zsh-powerlevel10k;
-          file = "share/zsh-powerlevel10k/powerlevel10k.zsh-theme";
-      }
-      {
-          name = "powerlevel10k-config";
-          src = lib.cleanSource ./config;
-          file = "p10k.zsh";
-      }
-    ];
-    initContent = lib.mkBefore ''
-      if [[ -f /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]]; then
-        . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
-        . /nix/var/nix/profiles/default/etc/profile.d/nix.sh
-      fi
+    # plugins = [
+      # {
+          # name = "powerlevel10k";
+          # src = pkgs.zsh-powerlevel10k;
+          # file = "share/zsh-powerlevel10k/powerlevel10k.zsh-theme";
+      # }
+      # {
+          # name = "powerlevel10k-config";
+          # src = lib.cleanSource ./config;
+          # file = "p10k.zsh";
+      # }
+    # ];
+    # initContent = lib.mkBefore ''
+      # if [[ -f /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]]; then
+        # . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+        # . /nix/var/nix/profiles/default/etc/profile.d/nix.sh
+      # fi
 
       # Define variables for directories
       # export PATH=$HOME/.pnpm-packages/bin:$HOME/.pnpm-packages:$PATH
       # export PATH=$HOME/.npm-packages/bin:$HOME/bin:$PATH
       # export PATH=$HOME/.composer/vendor/bin:$PATH
-      export PATH=$HOME/.local/share/bin:$PATH
+      # export PATH=$HOME/.local/share/bin:$PATH
 
       # Remove history data we don't want to see
-      export HISTIGNORE="pwd:ls:cd"
-      export EDITOR="nano"
+      # export HISTIGNORE="pwd:ls:cd"
+      # export EDITOR="nano"
 
       # Ripgrep alias
       # alias search='rg -p --glob "!node_modules/*" --glob "!vendor/*" "$@"'
 
       # Claude GUI
-      alias claude-desktop='nohup claude-desktop > /dev/null 2>&1 & disown'
+      # alias claude-desktop='nohup claude-desktop > /dev/null 2>&1 & disown'
 
       # Emacs is my editor
       # export ALTERNATE_EDITOR=""
@@ -61,52 +61,52 @@ let name = "John Faust";
       # alias art='php artisan'
 
       # Use difftastic, syntax-aware diffing
-      alias diff=difft
+      # alias diff=difft
 
       # Always color ls and group directories
-      alias l='eza -lHF'
-      alias la='lsd -SAFlr --total-size --group-dirs none'
-      alias ll='lsd -SAFl --total-size --group-dirs none'
-      alias ls='eza -lGHF'
-      alias lt='ls -T'
-      alias sudo='sudo '
-      alias tree='tree -a -I .git --dirsfirst'
-    '';
+      # alias l='eza -lHF'
+      # alias la='lsd -SAFlr --total-size --group-dirs none'
+      # alias ll='lsd -SAFl --total-size --group-dirs none'
+      # alias ls='eza -lGHF'
+      # alias lt='ls -T'
+      # alias sudo='sudo -H '
+      # alias tree='tree -a -I .git --dirsfirst'
+    # '';
   };
 
-  eza = {
-    enable = true;
-    enableZshIntegration = true;
-    colors = "auto";
-    extraOptions = [ "-Agh" "--classify=auto" "--smart-group" "--group-directories-first" "--no-quotes" "--time-style=long-iso" "--color-scale=all" "--color-scale-mode=gradient" "--git-repos" ];
-    git = true;
-    icons = "auto";
-  };
+  # eza = {
+    # enable = true;
+    # enableZshIntegration = true;
+    # colors = "auto";
+    # extraOptions = [ "-Agh" "--classify=auto" "--smart-group" "--group-directories-first" "--no-quotes" "--time-style=long-iso" "--color-scale=all" "--color-scale-mode=gradient" "--git-repos" ];
+    # git = true;
+    # icons = "auto";
+  # };
 
-  fzf = {
-    enable = true;
-    enableZshIntegration = true;
-    defaultOptions = [ "--style=full" ];
-  };
+  # fzf = {
+    # enable = true;
+    # enableZshIntegration = true;
+    # defaultOptions = [ "--style=full" ];
+  # };
 
   git = {
     enable = true;
     # ignores = [ "*.swp" ];
-    userName = name;
-    userEmail = email;
-    lfs = {
-      enable = true;
-    };
-    extraConfig = {
-      init.defaultBranch = "main";
+    # userName = name;
+    # userEmail = email;
+    # lfs = {
+      # enable = true;
+    # };
+    # extraConfig = {
+      # init.defaultBranch = "main";
       # core = {
 	      # editor = "vim";
         # autocrlf = "input";
       # };
       # commit.gpgsign = true;
       # pull.rebase = true;
-      rebase.autoStash = true;
-    };
+      # rebase.autoStash = true;
+    # };
   };
 
   # vim = {
