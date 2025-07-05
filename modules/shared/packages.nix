@@ -15,10 +15,12 @@ let
   myFonts = import ./fonts.nix { inherit pkgs; };
 in
 with pkgs; [
+  # 0-9
+
   # A
   # act # Run Github actions locally
   age # File encryption tool
-  # age-plugin-yubikey # YubiKey plugin for age encryption
+  age-plugin-yubikey # YubiKey plugin for age encryption
   # alacritty # GPU-accelerated terminal emulator
   # aspell # Spell checker
   # aspellDicts.en # English dictionary for aspell
@@ -26,7 +28,7 @@ with pkgs; [
   # B
   bash-completion # Bash completion scripts
   bat # Cat clone with syntax highlighting
-  btop # System monitor and process viewer
+  # btop # System monitor and process viewer
 
   # C
   colima
@@ -35,6 +37,7 @@ with pkgs; [
   # D
   # direnv # Environment variable management per directory
   difftastic # Structural diff tool
+  # dockutil # Manage icons on the dock
   du-dust # Disk usage analyzer
 
   # E
@@ -43,23 +46,27 @@ with pkgs; [
   # F
   fd # Fast find alternative
   # ffmpeg # Multimedia framework
+  fswatch # File change monitor
   fzf # Fuzzy finder
 
   # G
   # gcc # GNU Compiler Collection
   gh # GitHub CLI
+  git
+  git-lfs
   # glow # Markdown renderer for terminal
   # gnupg # GNU Privacy Guard
   # gopls # Go language server
 
   # H
-  htop # Interactive process viewer
-  hunspell # Spell checker
+  # htop # Interactive process viewer
+  # hunspell # Spell checker
 
   # I
   iftop # Network bandwidth monitor
   # imagemagick # Image manipulation toolkit
   iperf
+  iterm2
 
   # J
   # jetbrains.phpstorm # PHP IDE
@@ -71,7 +78,7 @@ with pkgs; [
 
   # L
   # libfido2 # FIDO2 library
-  lla
+  # lla
   lsd
 
   # M
@@ -81,16 +88,18 @@ with pkgs; [
   # myPython # Custom Python with packages
 
   # N
-  nano
-  nanorc
+  # nano
+  # nanorc
+  # ncurses # Terminal control library with terminfo database
   neofetch # System information tool
   # ngrok # Secure tunneling service
-  # nodePackages_latest.live-server # Development server with live reload
-  # nodePackages_latest.nodemon # Node.js file watcher
-  # nodePackages_latest.npm # Node package manager
-  # nodePackages_latest.prettier # Code formatter
+  # nodePackages.live-server # Development server with live reload
+  # nodePackages.nodemon # Node.js file watcher
+  # nodePackages.npm # Node package manager
+  # (hiPrio nodePackages.prettier) # Code formatter
 
   # O
+  ookla-speedtest
   # openssh # SSH client and server
 
   # P
@@ -108,6 +117,7 @@ with pkgs; [
   # S
   # slack # Team communication app
   socat
+  speedtest-go
   # sqlite # SQL database engine
 
   # T
@@ -120,6 +130,7 @@ with pkgs; [
   # U
   # unrar # RAR archive extractor
   # unzip # ZIP archive extractor
+  utm
   # uv # Python package installer
 
   # W
@@ -127,5 +138,5 @@ with pkgs; [
 
   # Z
   zip # ZIP archive creator
-  zsh-powerlevel10k # Zsh theme
+  # zsh-powerlevel10k # Zsh theme
 ] ++ myFonts

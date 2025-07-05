@@ -6,18 +6,13 @@
     home-manager.url = "github:nix-community/home-manager";
     mac-app-util.url = "github:hraban/mac-app-util";
     agenix.url = "github:ryantm/agenix";
-    claude-desktop = {
-      url = "github:k3d3/claude-desktop-linux-flake";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        flake-utils.follows = "flake-utils";
-      };
-    };
-    plasma-manager = {
-      url = "github:nix-community/plasma-manager";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.home-manager.follows = "home-manager";
-    };
+    # claude-desktop = {
+    #   url = "github:k3d3/claude-desktop-linux-flake";
+    #   inputs = {
+    #     nixpkgs.follows = "nixpkgs";
+    #     flake-utils.follows = "flake-utils";
+    #   };
+    # };
     darwin = {
       url = "github:LnL7/nix-darwin/master";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -25,10 +20,6 @@
     nix-homebrew = {
       url = "github:zhaofengli-wip/nix-homebrew";
     };
-    # homebrew-bundle = {
-    #   url = "github:homebrew/homebrew-bundle";
-    #   flake = false;
-    # };
     homebrew-core = {
       url = "github:homebrew/homebrew-core";
       flake = false;
@@ -37,36 +28,32 @@
       url = "github:homebrew/homebrew-cask";
       flake = false;
     };
+    homebrew-command-not-found = {
+      url = "github:homebrew/homebrew-command-not-found";
+      flake = false;
+    };
     homebrew-cloudflare = {
       url = "github:cloudflare/homebrew-cloudflare";
       flake = false;
     };
-    # homebrew-fuse = {
-    #   url = "github:gromgit/homebrew-fuse";
-    #   flake = false;
-    # };
-    homebrew-macos-fuse-t = {
-      url = "github:macos-fuse-t/homebrew-cask";
-      flake = false;
-    };
-    # homebrew-services = {
-    #   url = "github:homebrew/homebrew-services";
-    #   flake = false;
-    # };
     homebrew-knickknacks = {
       url = "github:slickag/homebrew-knickknacks";
       flake = false;
     };
-    disko = {
-      url = "github:nix-community/disko";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    # disko = {
+    #   url = "github:nix-community/disko";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
     # secrets = {
       # url = "git+ssh://git@github.com/slickag/nix-secrets.git";
       # flake = false;
     # };
+    # niri-flake = {
+    #   url = "github:sodiboo/niri-flake";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
   };
-  outputs = { self, darwin, claude-desktop, nix-homebrew, homebrew-core, homebrew-cask, homebrew-cloudflare, homebrew-macos-fuse-t, homebrew-knickknacks, home-manager, mac-app-util, plasma-manager, nixpkgs, flake-utils, disko, agenix } @inputs:
+  outputs = { self, darwin, nix-homebrew, homebrew-core, homebrew-cask, homebrew-command-not-found, homebrew-cloudflare, homebrew-knickknacks, home-manager, mac-app-util, nixpkgs, flake-utils, agenix } @inputs:
     let
       user = "AG";
       linuxSystems = [ "x86_64-linux" "aarch64-linux" ];
@@ -126,20 +113,17 @@
           inherit system;
           specialArgs = inputs // { inherit user; };
           modules = [
+            ({ config, ... }: {
+              homebrew.taps = builtins.attrNames config.nix-homebrew.taps;
+            })
             mac-app-util.darwinModules.default
             home-manager.darwinModules.home-manager
             (
               { pkgs, config, inputs, ... }:
               {
-                # To enable it for all users:
                 home-manager.sharedModules = [
                   mac-app-util.homeManagerModules.default
                 ];
-                # Or to enable it for a single user only:
-                # home-manager.users.foobar.imports = [
-                  #...
-                  # mac-app-util.homeManagerModules.default
-                # ];
               }
             )
             nix-homebrew.darwinModules.nix-homebrew
@@ -152,10 +136,8 @@
                 taps = {
                   "homebrew/homebrew-core" = homebrew-core;
                   "homebrew/homebrew-cask" = homebrew-cask;
-                  # "homebrew/homebrew-bundle" = homebrew-bundle;
+                  "homebrew/homebrew-command-not-found" = homebrew-command-not-found;
                   "cloudflare/homebrew-cloudflare" = homebrew-cloudflare;
-                  "macos-fuse-t/homebrew-cask" = homebrew-macos-fuse-t;
-                  # "homebrew/homebrew-services" = homebrew-services;
                   "slickag/homebrew-knickknacks" = homebrew-knickknacks;
                 };
                 mutableTaps = false;
@@ -171,10 +153,10 @@
           inherit system;
           specialArgs = inputs // { inherit user; };
           modules = [
-            disko.nixosModules.disko
+            # disko.nixosModules.disko
+            # niri-flake.nixosModules.niri
             home-manager.nixosModules.home-manager {
               home-manager = {
-                sharedModules = [ plasma-manager.homeManagerModules.plasma-manager ];
                 useGlobalPkgs = true;
                 useUserPackages = true;
                 users.${user} = { config, pkgs, lib, ... }:

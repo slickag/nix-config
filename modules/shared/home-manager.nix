@@ -11,9 +11,9 @@ let name = "John Faust";
     # nix-direnv.enable = true;
   # };
 
-  zsh = {
-    enable = true;
-    autocd = false;
+  # zsh = {
+    # enable = true;
+    # autocd = false;
     # cdpath = [ "~/.local/share/src" ];
     # plugins = [
       # {
@@ -33,11 +33,12 @@ let name = "John Faust";
         # . /nix/var/nix/profiles/default/etc/profile.d/nix.sh
       # fi
 
-      # Define variables for directories
+      # Define PATH variables
       # export PATH=$HOME/.pnpm-packages/bin:$HOME/.pnpm-packages:$PATH
       # export PATH=$HOME/.npm-packages/bin:$HOME/bin:$PATH
       # export PATH=$HOME/.composer/vendor/bin:$PATH
       # export PATH=$HOME/.local/share/bin:$PATH
+      # export PYTHONPATH="$HOME/.local-pip/packages:$PYTHONPATH"
 
       # Remove history data we don't want to see
       # export HISTIGNORE="pwd:ls:cd"
@@ -72,7 +73,7 @@ let name = "John Faust";
       # alias sudo='sudo -H '
       # alias tree='tree -a -I .git --dirsfirst'
     # '';
-  };
+  # };
 
   # eza = {
     # enable = true;
@@ -110,29 +111,29 @@ let name = "John Faust";
   };
 
   # vim = {
-    # enable = true;
-    # plugins = with pkgs.vimPlugins; [ vim-airline vim-airline-themes vim-tmux-navigator ];
-    # settings = { ignorecase = true; };
-    # extraConfig = ''
-      # "" General
-      # set number
-      # set history=1000
-      # set nocompatible
-      # set modelines=0
-      # set encoding=utf-8
-      # set scrolloff=3
-      # set showmode
-      # set showcmd
-      # set hidden
-      # set wildmenu
-      # set wildmode=list:longest
-      # set cursorline
-      # set ttyfast
-      # set nowrap
-      # set ruler
-      # set backspace=indent,eol,start
-      # set laststatus=2
-      # set clipboard=autoselect
+  #   enable = true;
+  #   plugins = with pkgs.vimPlugins; [ vim-airline vim-airline-themes vim-tmux-navigator ];
+  #   settings = { ignorecase = true; };
+  #   extraConfig = ''
+  #     "" General
+  #     set number
+  #     set history=1000
+  #     set nocompatible
+  #     set modelines=0
+  #     set encoding=utf-8
+  #     set scrolloff=3
+  #     set showmode
+  #     set showcmd
+  #     set hidden
+  #     set wildmenu
+  #     set wildmode=list:longest
+  #     set cursorline
+  #     set ttyfast
+  #     set nowrap
+  #     set ruler
+  #     set backspace=indent,eol,start
+  #     set laststatus=2
+  #     set clipboard=unnamedplus
 
       # " Dir stuff
       # set nobackup

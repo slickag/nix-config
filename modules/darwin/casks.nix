@@ -22,15 +22,16 @@ _:
 
   # F
   # "font-meslo-lg-nerd-font"
+  "fuse-t"
 
   # G
-  "google-chrome@dev"
+  # "google-chrome@dev"
 
   # H
 
   # I
   # "insomnia"
-  "iterm2@beta"
+  # "iterm2@beta"
 
   # J
 
@@ -40,7 +41,6 @@ _:
   # "loom"
 
   # M
-  "macos-fuse-t/cask/fuse-t"
 
   # N
   # "ngrok"
