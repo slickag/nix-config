@@ -1,11 +1,11 @@
 {
   description = "General Purpose Configuration for macOS and NixOS";
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     flake-utils.url = "github:numtide/flake-utils";
     home-manager.url = "github:nix-community/home-manager";
     mac-app-util.url = "github:hraban/mac-app-util";
-    agenix.url = "github:ryantm/agenix";
+    # agenix.url = "github:ryantm/agenix";
     # claude-desktop = {
     #   url = "github:k3d3/claude-desktop-linux-flake";
     #   inputs = {
@@ -14,11 +14,12 @@
     #   };
     # };
     darwin = {
-      url = "github:LnL7/nix-darwin/master";
+      url = "github:nix-darwin/nix-darwin/master";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nix-homebrew = {
-      url = "github:zhaofengli-wip/nix-homebrew";
+      # url = "github:zhaofengli/nix-homebrew";
+      url = "github:slickag/nix-homebrew/brew-latest-patch-1";
     };
     homebrew-core = {
       url = "github:homebrew/homebrew-core";
@@ -32,12 +33,24 @@
       url = "github:homebrew/homebrew-command-not-found";
       flake = false;
     };
-    homebrew-cloudflare = {
-      url = "github:cloudflare/homebrew-cloudflare";
+    homebrew-cirruslabs = {
+      url = "github:cirruslabs/homebrew-cli";
       flake = false;
     };
-    homebrew-knickknacks = {
-      url = "github:slickag/homebrew-knickknacks";
+    # homebrew-cloudflare = {
+    #   url = "github:cloudflare/homebrew-cloudflare";
+    #   flake = false;
+    # };
+    homebrew-hashicorp = {
+      url = "github:hashicorp/homebrew-tap";
+      flake = false;
+    };
+    homebrew-scoop = {
+      url = "github:slickag/homebrew-scoop";
+      flake = false;
+    };
+    homebrew-wailbrew = {
+      url = "github:wickenico/homebrew-wailbrew";
       flake = false;
     };
     # disko = {
@@ -48,12 +61,12 @@
       # url = "git+ssh://git@github.com/slickag/nix-secrets.git";
       # flake = false;
     # };
-    # niri-flake = {
-    #   url = "github:sodiboo/niri-flake";
+    # chaotic = {
+    #   url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
     #   inputs.nixpkgs.follows = "nixpkgs";
     # };
   };
-  outputs = { self, darwin, nix-homebrew, homebrew-core, homebrew-cask, homebrew-command-not-found, homebrew-cloudflare, homebrew-knickknacks, home-manager, mac-app-util, nixpkgs, flake-utils, agenix } @inputs:
+  outputs = { self, darwin, nix-homebrew, homebrew-core, homebrew-cask, homebrew-command-not-found, homebrew-cirruslabs, homebrew-hashicorp, homebrew-scoop, homebrew-wailbrew, home-manager, mac-app-util, nixpkgs, flake-utils } @inputs:
     let
       user = "AG";
       linuxSystems = [ "x86_64-linux" "aarch64-linux" ];
@@ -61,9 +74,10 @@
       forAllSystems = f: nixpkgs.lib.genAttrs (linuxSystems ++ darwinSystems) f;
       devShell = system: let pkgs = nixpkgs.legacyPackages.${system}; in {
         default = with pkgs; mkShell {
-          nativeBuildInputs = with pkgs; [ bashInteractive git age age-plugin-yubikey ];
+          # nativeBuildInputs = with pkgs; [ bashInteractive git age age-plugin-yubikey ];
+          nativeBuildInputs = with pkgs; [ bashInteractive git ];
           shellHook = with pkgs; ''
-            export EDITOR=nano
+            export EDITOR=vim
           '';
         };
       };
@@ -73,12 +87,14 @@
           #!/usr/bin/env bash
           PATH=${nixpkgs.legacyPackages.${system}.git}/bin:$PATH
           echo "Running ${scriptName} for ${system}"
-          exec ${self}/apps/${system}/${scriptName}
+          exec ${self}/apps/${system}/${scriptName} "$@"
         '')}/bin/${scriptName}";
       };
       mkLinuxApps = system: {
         "apply" = mkApp "apply" system;
         "build-switch" = mkApp "build-switch" system;
+        "build-switch-emacs" = mkApp "build-switch-emacs" system;
+        "clean" = mkApp "clean" system;
         "copy-keys" = mkApp "copy-keys" system;
         "create-keys" = mkApp "create-keys" system;
         "check-keys" = mkApp "check-keys" system;
@@ -89,6 +105,7 @@
         "apply" = mkApp "apply" system;
         "build" = mkApp "build" system;
         "build-switch" = mkApp "build-switch" system;
+        "clean" = mkApp "clean" system;
         "copy-keys" = mkApp "copy-keys" system;
         "create-keys" = mkApp "create-keys" system;
         "check-keys" = mkApp "check-keys" system;
@@ -99,7 +116,7 @@
       templates = {
         starter = {
           path = ./templates/starter;
-          description = "Starter configuration";
+          description = "Starter configuration without secrets";
         };
         # starter-with-secrets = {
           # path = ./templates/starter-with-secrets;
@@ -137,8 +154,11 @@
                   "homebrew/homebrew-core" = homebrew-core;
                   "homebrew/homebrew-cask" = homebrew-cask;
                   "homebrew/homebrew-command-not-found" = homebrew-command-not-found;
-                  "cloudflare/homebrew-cloudflare" = homebrew-cloudflare;
-                  "slickag/homebrew-knickknacks" = homebrew-knickknacks;
+                  "cirruslabs/homebrew-cli" = homebrew-cirruslabs;
+                  # "cloudflare/homebrew-cloudflare" = homebrew-cloudflare;
+                  "hashicorp/homebrew-tap" = homebrew-hashicorp;
+                  "slickag/homebrew-scoop" = homebrew-scoop;
+                  "wickenico/homebrew-wailbrew" = homebrew-wailbrew;
                 };
                 mutableTaps = false;
                 autoMigrate = true;
@@ -154,9 +174,10 @@
           specialArgs = inputs // { inherit user; };
           modules = [
             # disko.nixosModules.disko
-            # niri-flake.nixosModules.niri
+            # chaotic.nixosModules.default
             home-manager.nixosModules.home-manager {
               home-manager = {
+                # sharedModules = [ plasma-manager.homeModules.plasma-manager ]; 
                 useGlobalPkgs = true;
                 useUserPackages = true;
                 users.${user} = { config, pkgs, lib, ... }:

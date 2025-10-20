@@ -204,8 +204,9 @@ let name = "%NAME%";
         # \ ]
 
       # let g:startify_bookmarks = [
-        # \ '~/.local/share/src',
-        # \ ]
+      #   \ '~/Projects',
+      #   \ '~/Documents',
+      #   \ ]
 
       # let g:airline_theme='bubblegum'
       # let g:airline_powerline_fonts = 1
@@ -238,19 +239,11 @@ let name = "%NAME%";
         # ];
       # };
 
-      # dynamic_padding = true;
-      # decorations = "full";
-      # title = "Terminal";
-      # class = {
-        # instance = "Alacritty";
-        # general = "Alacritty";
-      # };
-
       # colors = {
-        # primary = {
-          # background = "0x1f2528";
-          # foreground = "0xc0c5ce";
-        # };
+      #   primary = {
+      #     background = "0x1f2528";
+      #     foreground = "0xc0c5ce";
+      #   };
 
         # normal = {
           # black = "0x1f2528";
@@ -278,28 +271,35 @@ let name = "%NAME%";
   # };
 
   # ssh = {
-    # enable = true;
-    # includes = [
-      # (lib.mkIf pkgs.stdenv.hostPlatform.isLinux
-        # "/home/${user}/.ssh/config_external"
-      # )
-      # (lib.mkIf pkgs.stdenv.hostPlatform.isDarwin
-        # "/Users/${user}/.ssh/config_external"
-      # )
-    # ];
-    # matchBlocks = {
-      # "github.com" = {
-        # identitiesOnly = true;
-        # identityFile = [
-          # (lib.mkIf pkgs.stdenv.hostPlatform.isLinux
-            # "/home/${user}/.ssh/id_github"
-          # )
-          # (lib.mkIf pkgs.stdenv.hostPlatform.isDarwin
-            # "/Users/${user}/.ssh/id_github"
-          # )
-        # ];
-      # };
-    # };
+  #   enable = true;
+  #   enableDefaultConfig = false;
+  #   includes = [
+  #     (lib.mkIf pkgs.stdenv.hostPlatform.isLinux
+  #       "/home/${user}/.ssh/config_external"
+  #     )
+  #     (lib.mkIf pkgs.stdenv.hostPlatform.isDarwin
+  #       "/Users/${user}/.ssh/config_external"
+  #     )
+  #   ];
+  #   matchBlocks = {
+  #     "*" = {
+  #       # Set the default values we want to keep
+  #       sendEnv = [ "LANG" "LC_*" ];
+  #       hashKnownHosts = true;
+  #     };
+  #     # Example SSH configuration for GitHub
+  #     # "github.com" = {
+  #     #   identitiesOnly = true;
+  #     #   identityFile = [
+  #     #     (lib.mkIf pkgs.stdenv.hostPlatform.isLinux
+  #     #       "/home/${user}/.ssh/id_github"
+  #     #     )
+  #     #     (lib.mkIf pkgs.stdenv.hostPlatform.isDarwin
+  #     #       "/Users/${user}/.ssh/id_github"
+  #     #     )
+  #     #   ];
+  #     # };
+  #   };
   # };
 
   tmux = {

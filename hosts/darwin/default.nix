@@ -1,5 +1,8 @@
 { agenix, config, pkgs, ... }:
-let user = "AG"; in
+let 
+  user = "AG";
+  # myEmacs = import ../../modules/shared/emacs.nix { inherit pkgs; };
+in
 {
   imports = [
     # ../../modules/darwin/secrets.nix
@@ -9,16 +12,12 @@ let user = "AG"; in
   ];
   # Setup user, packages, programs
   nix = {
+    enable = false;
     package = pkgs.nix;
     settings = {
       trusted-users = [ "@admin" "${user}" ];
       substituters = [ "https://nix-community.cachix.org" "https://cache.nixos.org" ];
       trusted-public-keys = [ "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=" ];
-    };
-    gc = {
-      automatic = true;
-      interval = { Weekday = 0; Hour = 2; Minute = 0; };
-      options = "--delete-older-than 30d";
     };
     # Turn this on to make command line easier
     extraOptions = ''
@@ -27,7 +26,7 @@ let user = "AG"; in
   };
   # Load configuration that is shared across systems
   environment.systemPackages = with pkgs; [
-    # emacs
+    # myEmacs
     agenix.packages."${pkgs.system}".default
   ] ++ (import ../../modules/shared/packages.nix { inherit pkgs; });
 

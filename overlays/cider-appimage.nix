@@ -1,12 +1,9 @@
 self: super: with super; {
   cider-appimage = appimageTools.wrapType2 rec {
     pname = "cider";
-    version = "3.0.2";
+    version = "3.1.2";
 
-    src = builtins.path {
-      path = ./cider-v3.0.2-linux-x64.AppImage;
-      name = "cider-v${version}-linux-x64.AppImage";
-    };
+    src = ./cider-v3.1.2-linux-x64.AppImage;
 
     nativeBuildInputs = [ makeWrapper ];
 
@@ -37,4 +34,4 @@ self: super: with super; {
       platforms = platforms.linux;
     };
   };
-}
+} 

@@ -3,14 +3,11 @@
 with pkgs; [
   # General packages for development and system management
   alacritty
-  aspell
-  aspellDicts.en
   bash-completion
   bat
   btop
   coreutils
   killall
-  neofetch
   openssh
   sqlite
   wget
@@ -38,14 +35,10 @@ with pkgs; [
   meslo-lgs-nf
 
   # Node.js development tools
-  nodePackages.npm # globally install npm
-  nodePackages.prettier
-  nodejs
+  nodejs_24
 
   # Text and terminal utilities
   htop
-  hunspell
-  iftop
   jetbrains-mono
   jq
   ripgrep
@@ -54,6 +47,22 @@ with pkgs; [
   unrar
   unzip
   zsh-powerlevel10k
+  
+  # Development tools
+  curl
+  gh
+  terraform
+  kubectl
+  awscli2
+  lazygit
+  fzf
+  direnv
+  
+  # Programming languages and runtimes
+  go
+  rustc
+  cargo
+  openjdk
 
   # Python packages
   python3

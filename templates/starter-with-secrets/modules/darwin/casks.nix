@@ -4,23 +4,29 @@ _:
   # Development Tools
   "homebrew/cask/docker"
   "visual-studio-code"
-
-  # Communication Tools
-  "discord"
-  "notion"
-  "slack"
-  "telegram"
-  "zoom"
-
-  # Utility Tools
-  "syncthing"
-
-  # Entertainment Tools
-  "vlc"
+  "iterm2"
+  "postman"
+  "cursor"
 
   # Productivity Tools
   "raycast"
 
   # Browsers
   "google-chrome"
+
+  # Communication Tools - Examples (uncomment as needed)
+  # "discord"
+  # "notion"
+  # "slack"
+  # "telegram"
+  # "zoom"
+
+  # Utility Tools - Examples (uncomment as needed)
+  # "syncthing"
+  # "1password"
+  # "rectangle"
+
+  # Entertainment Tools - Examples (uncomment as needed)
+  # "spotify"
+  # "vlc"
 ]

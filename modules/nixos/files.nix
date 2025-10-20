@@ -6,47 +6,49 @@ let
   xdg_dataHome   = "${home}/.local/share";
   xdg_stateHome  = "${home}/.local/state"; in
 {
-
-  "${xdg_dataHome}/bin/movesinks" = {
-    executable = true;
+  "${home}/.npmrc" = {
     text = ''
-      #!/usr/bin/env bash
-      pacmd set-default-sink $1
-      pacmd list-sink-inputs | grep index | while read line
-      do
-        pacmd move-sink-input `echo $line | cut -f2 -d' '` $1
-      done
+      prefix=/home/dustin/.npm-packages
     '';
   };
 
-  "${xdg_dataHome}/bin/speakers" = {
-    executable = true;
+  "${xdg_configHome}/swappy/config" = {
     text = ''
-      #!/usr/bin/env bash
-      # Script to change audio format to headphones and check if the sink exists
-
-      # Define the sink name
-      SINK_NAME="alsa_output.usb-Audioengine_Audioengine_2_-00.analog-stereo"
-
-      # Check if the sink exists
-      if pactl list short sinks | grep -q "$SINK_NAME"; then
-        # Sink exists, set it as the default
-        pacmd set-default-sink "$SINK_NAME"
-        movesinks "$SINK_NAME"
-      else
-        # Sink does not exist, print message
-        echo "Turn on your speakers, stupid."
-      fi
+      [Default]
+      save_dir=$HOME/Pictures/Screenshots
+      save_filename_format=screenshot-%Y%m%d-%H%M%S.png
+    '';
+  };
+  
+  "${xdg_dataHome}/applications/cheatsheet-viewer.desktop" = {
+    text = ''
+      [Desktop Entry]
+      Name=Cheatsheet Viewer
+      Comment=View programming cheatsheets
+      Exec=cheatsheet-viewer
+      Type=Application
+      Icon=accessories-text-editor
+      Categories=Utility;Documentation;
     '';
   };
 
-  "${xdg_dataHome}/bin/headphones" = {
-    executable = true;
+  "${xdg_configHome}/kwinrulesrc" = {
     text = ''
-      #!/usr/bin/env bash
-      # Changes audio format to headphones
-      pacmd set-default-sink alsa_output.pci-0000_00_1f.3.analog-stereo
-      movesinks alsa_output.pci-0000_00_1f.3.analog-stereo
+[General]
+count=1
+rules=fa8dd962-e5d7-4a39-9bea-190a62f25ce2
+
+[fa8dd962-e5d7-4a39-9bea-190a62f25ce2]
+Description=Cheatsheet Viewer Position and Size
+position=2351,0
+positionrule=3
+size=988,1100
+sizerule=2
+types=1
+wmclass=alacritty cheatsheet-viewer
+wmclasscomplete=true
+wmclassmatch=1
     '';
   };
+  
 }

@@ -12,8 +12,8 @@
 (defun adjust-frame-size-and-position (&optional frame)
   "Adjust size and position of FRAME based on its type."
   (if (display-graphic-p frame)
-      (let* ((w 150)  ; Set to desired width in characters
-            (h 50)   ; Set to desired height in lines
+      (let* ((w 120)  ; Set to desired width in characters (good for documents)
+            (h 50)   ; Set to desired height in lines (comfortable reading height)
             (width (* w (frame-char-width frame)))
             (height (* h (frame-char-height frame)))
             (left (max 0 (floor (/ (- (x-display-pixel-width) width) 2))))
@@ -30,15 +30,30 @@
     (add-hook 'after-make-frame-functions
               (lambda (frame)
                 (select-frame frame)
-                (when (system-is-mac) (adjust-frame-size-and-position frame)))
-  (adjust-frame-size-and-position)))
+                (adjust-frame-size-and-position frame)))
+  (adjust-frame-size-and-position))
 
 ;; Smooth out garbage collection
 (use-package gcmh
-  :ensure t
+  :ensure nil  ; Managed by Nix
   :demand t
   :config
   (gcmh-mode 1))
+
+;; Add internal borders and fringes for better spacing
+(setq-default left-fringe-width 16)
+(setq-default right-fringe-width 16)
+
+;; Set frame dimensions in default-frame-alist for consistency
+(add-to-list 'default-frame-alist '(width . 120))
+(add-to-list 'default-frame-alist '(height . 50))
+
+;; Set internal border width for padding around the frame
+(add-to-list 'default-frame-alist '(internal-border-width . 15))
+
+;; Apply to existing frames
+(dolist (frame (frame-list))
+  (set-frame-parameter frame 'internal-border-width 15))
 
 (unless (assoc-default "melpa" package-archives)
   (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t))
@@ -115,8 +130,6 @@
 ;; ESC will also cancel/quit/etc.
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 (use-package general
-  :init
-    (setq evil-want-keybinding nil)
   :config
     (general-evil-setup t)
     (general-create-definer dl/leader-keys
@@ -185,10 +198,11 @@
 
 ;; f.el - modern file API
 (use-package f
-  :ensure t)
+  :ensure nil  ; Managed by Nix
+  :demand t)
 
 (use-package doom-modeline
-  :ensure t
+  :ensure nil  ; Managed by Nix
   :after f
   :init (doom-modeline-mode 1))
 
@@ -259,7 +273,7 @@
   (set-face-attribute 'variable-pitch nil :font "Helvetica" :weight 'normal :height 170))
 
 (use-package dashboard
-  :ensure t
+  :ensure nil  ; Managed by Nix
   :config
   (dashboard-setup-startup-hook)
   (setq dashboard-startup-banner 'ascii
@@ -285,11 +299,24 @@
 (global-set-key (kbd "<C-tab>") 'next-buffer)
 
 (use-package doom-themes
-  :ensure t
+  :ensure nil  ; Managed by Nix
   :config
     (setq doom-themes-enable-bold t
             doom-themes-enable-italic t)
-    (load-theme 'doom-sourcerer t)
+    (load-theme 'doom-1337 t)
+    
+    ;; Fix white frame issue by setting default frame parameters
+    (setq default-frame-alist 
+          (append default-frame-alist
+                  '((background-color . "#1c1e27")
+                    (foreground-color . "#cccac2"))))
+    (set-face-background 'default "#1c1e27")
+    (set-face-background 'fringe "#1c1e27")
+    (set-face-background 'internal-border "#1c1e27")
+    
+    ;; Add line spacing for better readability
+    (setq-default line-spacing 0.15)
+    
     (doom-themes-visual-bell-config)
     (doom-themes-org-config))
 
@@ -476,11 +503,7 @@ The type of heading (TODO, PROJECT, etc.) is specified by HEADING-TYPE."
     (org-element-map (org-element-parse-buffer) 'keyword
     (lambda (el) (when (string-match property (org-element-property :key el)) el)))))
 
-(defun dl/refile-and-transclude ()
-  "Move file and add transclude link with header"
-(interactive)
-  (org-roam-refile)
-  (insert "#+transclude: [[file:~/.local/share/org-roam/20220419121404-todo.org::*" (org-element-property :value (car (org-global-props "TITLE"))) "][Transclude]]"))
+;; Removed dl/refile-and-transclude function - no longer needed
 
 (defvar current-time-format "%H:%M:%S"
   "Format of date to insert with `insert-current-time' func.
@@ -533,7 +556,6 @@ Note the weekly scope of the command's precision.")
 (dl/leader-keys
   "e"  '(:ignore t :which-key "emacs")
   "ee" '(dl/load-buffer-with-emacs-config :which-key "open emacs config")
-  "ey" '(org-download-clipboard :which-key "save file from clipboard")
   "er" '(dl/reload-emacs :which-key "reload emacs"))
 
 (use-package yasnippet)
@@ -545,53 +567,44 @@ Note the weekly scope of the command's precision.")
     :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n\n")
     :unnarrowed t)))
 
-(require 'ucs-normalize)
-
-(use-package compat
-  :straight t
-  :ensure t)
-
 (use-package org-roam
-  :straight (:host github :repo "dustinlyons/org-roam"
-             :branch "master"
-             :files (:defaults "extensions/*")
-  :build (:not compile))
+  :ensure nil  ; Managed by Nix
   :init
     (setq org-roam-v2-ack t) ;; Turn off v2 warning
-    (setq org-roam-mode-section-functions
-      (list #'org-roam-backlinks-section
-            #'org-roam-reflinks-section
-            #'org-roam-unlinked-references-section))
-      (add-to-list 'display-buffer-alist
-           '("\\*org-roam\\*"
-             (display-buffer-in-direction)
-             (direction . right)
-             (window-width . 0.33)
-             (window-height . fit-window-to-buffer)))
+    ;; Use the builtin SQLite backend - set this before loading org-roam
+    (setq org-roam-database-connector 'sqlite-builtin)
+  :demand t  ; Load immediately to ensure settings take effect
   :custom
     (org-roam-directory (file-truename "~/.local/share/org-roam"))
     (org-roam-dailies-directory "daily/")
     (org-roam-completion-everywhere t)
+  :config
+    (add-to-list 'display-buffer-alist
+         '("\\*org-roam\\*"
+           (display-buffer-in-direction)
+           (direction . right)
+           (window-width . 0.33)
+           (window-height . fit-window-to-buffer)))
+    (org-roam-db-autosync-mode)
   :bind
     (("C-c r b" . org-roam-buffer-toggle)
      ("C-c r t" . org-roam-dailies-goto-today)
      ("C-c r y" . org-roam-dailies-goto-yesterday)
-     ("C-M-n" . org-roam-node-insert)
+     ("C-c r n" . org-roam-node-insert)
+     ("C-c r f" . org-roam-node-find)
+     ("C-c r c" . dl/org-roam-create-id)
+     ("M-s-n" . org-roam-node-insert)  ; Alt + Super + N to create new node
+     ("M-s-f" . org-roam-node-find)    ; Alt + Super + F to find node
        :map org-mode-map
      ("C-M-i"   . completion-at-point)
-     ("C-M-f" . org-roam-node-find)
-     ("C-M-c" . dl/org-roam-create-id)
      ("C-<left>" . org-roam-dailies-goto-previous-note)
-     ("C-`" . org-roam-buffer-toggle)
      ("C-<right>" . org-roam-dailies-goto-next-note)))
-(org-roam-db-autosync-mode)
 
 (setq org-roam-dailies-capture-templates
   '(("d" "default" entry
      "* %?"
      :if-new (file+head "%<%Y-%m-%d>.org"
-                        (lambda () (concat ":PROPERTIES:\n:ID:       " (org-id-new) "\n:END:\n"
-                                           "#+TITLE: %<%Y-%m-%d>\n#+filetags: Daily\n"))))))
+                        "#+title: %<%Y-%m-%d>\n#+filetags: Daily\n\n"))))
 
 (defvar dl/org-created-property-name "CREATED")
 
@@ -692,12 +705,13 @@ Note the weekly scope of the command's precision.")
 (use-package evil
   :init
     (setq evil-want-integration t) ;; TODO: research what this does
+    (setq evil-want-keybinding nil) ;; Required for evil-collection
     (setq evil-want-fine-undo 'fine) ;; undo/redo each motion
     (setq evil-want-Y-yank-to-eol t) ;; Y copies to end of line like vim
     (setq evil-want-C-u-scroll t) ;; vim like scroll up
-    (evil-mode 1)
-    :hook (evil-mode . dl/evil-hook)
   :config
+    (evil-mode 1)
+    (dl/evil-hook)
     ;; Emacs "cancel" == vim "cancel"
     (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
 
@@ -715,11 +729,7 @@ Note the weekly scope of the command's precision.")
   ;; Gives me vim bindings elsewhere in emacs
   (use-package evil-collection
     :after evil
-    :init
-    ;; Define the variable before use
-    (defvar evil-collection-mode-list nil)
     :config
-    (setq evil-collection-mode-list (remove 'magit evil-collection-mode-list))
     (evil-collection-init))
 
   ;; Keybindings in org mode
@@ -751,7 +761,6 @@ Note the weekly scope of the command's precision.")
 
 (use-package dired
   :ensure nil
-  :straight nil
   :defer 1
   :commands (dired dired-jump)
   :config
@@ -774,18 +783,23 @@ Note the weekly scope of the command's precision.")
             (all-the-icons-dired-mode 1))
             (hl-line-mode 1)))
 
-(use-package dired-single)
 (use-package dired-ranger)
 (use-package dired-collapse)
 
 (evil-collection-define-key 'normal 'dired-mode-map
-  "h" 'dired-single-up-directory
+  "h" 'dired-up-directory
   "c" 'find-file
   "H" 'dired-omit-mode
-  "l" 'dired-single-buffer
+  "l" 'dired-find-file
+  "o" 'dired-find-file-other-window
+  (kbd "C-o") 'dired-display-file
   "y" 'dired-ranger-copy
   "X" 'dired-ranger-move
-  "p" 'dired-ranger-paste)
+  "p" 'dired-ranger-paste
+  "gr" 'revert-buffer
+  "g" 'revert-buffer
+  (kbd "RET") 'dired-find-file
+  (kbd "<return>") 'dired-find-file)
 
 ;; Darwin needs ls from coreutils for dired to work
 (when (system-is-mac)
@@ -837,6 +851,57 @@ Note the weekly scope of the command's precision.")
 (setq lock-file-name-transforms
       `((".*" "~/.local/state/emacs/lock-files/" t)))
 
+(use-package deadgrep
+  :bind (("C-c d g" . deadgrep)
+         ("C-c d p" . deadgrep-project))
+  :config
+  (defun deadgrep-project ()
+    "Run deadgrep in the current project root."
+    (interactive)
+    (let ((default-directory (projectile-project-root)))
+      (call-interactively #'deadgrep)))
+  
+  ;; Customize deadgrep faces for better visibility
+  :custom-face
+  ;; File headers with background color
+  (deadgrep-filename-face ((t (:foreground "#7cc3f3" 
+                                :background "#2a2e38"
+                                :weight bold
+                                :height 1.1
+                                :box (:line-width 2 :color "#3a3e48")))))
+  ;; Match count styling
+  (deadgrep-match-count-face ((t (:foreground "#99C794"
+                                   :weight bold))))
+  ;; Search term highlighting
+  (deadgrep-match-face ((t (:foreground "#1c1e27"
+                             :background "#FAC863"
+                             :weight bold))))
+  ;; Line numbers
+  (deadgrep-line-number-face ((t (:foreground "#65737E"))))
+  ;; Meta information
+  (deadgrep-meta-face ((t (:foreground "#5FB3B3"
+                           :italic t)))))
+
+;; Leader key bindings for Deadgrep
+(dl/leader-keys
+  "sd"  '(:ignore t :which-key "deadgrep")
+  "sdg" '(deadgrep :which-key "deadgrep here")
+  "sdp" '(deadgrep-project :which-key "deadgrep project"))
+
+;; Configure key-chord for double-shift to trigger deadgrep
+(use-package key-chord
+  :ensure nil  ; Managed by Nix
+  :config
+  (key-chord-mode 1)
+  ;; Set the delay between key presses (in seconds)
+  (setq key-chord-two-keys-delay 0.2)
+  ;; Define double-bracket to run deadgrep
+  ;; Note: Shift alone cannot be bound, so we use a workaround
+  (key-chord-define-global "[[" 'deadgrep))
+
+;; Since Emacs can't detect shift key alone, we use double brackets
+(message "Deadgrep configured: Use double-bracket ([[) to launch deadgrep")
+
 (use-package ripgrep)
 (use-package projectile
   :diminish projectile-mode
@@ -854,29 +919,107 @@ Note the weekly scope of the command's precision.")
 (setq projectile-ignored-projects '("~/.emacs.d/"))
 (setq projectile-globally-ignored-directories '("dist" "node_modules" ".log" ".git"))
 
+;; Custom projectile project shortcuts
+(defun dl/open-conductly-project ()
+  "Open the Conductly project starting at README.md."
+  (interactive)
+  (let ((conductly-path (expand-file-name "~/src/conductly/README.md")))
+    (if (file-exists-p conductly-path)
+        (progn
+          (find-file conductly-path)
+          (projectile-discover-projects-in-directory "~/src/conductly")
+          (projectile-switch-project-by-name "~/src/conductly"))
+      (message "Conductly project not found at ~/src/conductly"))))
+
+(defun dl/open-nixos-config-project ()
+  "Open the nixos-config project starting at README.md."
+  (interactive)
+  (let ((nixos-config-path (expand-file-name "~/src/nixos-config/README.md")))
+    (if (file-exists-p nixos-config-path)
+        (progn
+          (find-file nixos-config-path)
+          (projectile-discover-projects-in-directory "~/src/nixos-config")
+          (projectile-switch-project-by-name "~/src/nixos-config"))
+      (message "nixos-config project not found at ~/src/nixos-config"))))
+
+;; Custom magit project functions
+(defun dl/magit-status-conductly ()
+  "Open magit status for Conductly project in full frame."
+  (interactive)
+  (let ((conductly-path (expand-file-name "~/src/conductly")))
+    (if (file-directory-p conductly-path)
+        (progn
+          (magit-status conductly-path)
+          (delete-other-windows))
+      (message "Conductly project not found at ~/src/conductly"))))
+
+(defun dl/magit-status-nixos-config ()
+  "Open magit status for nixos-config project in full frame."
+  (interactive)
+  (let ((nixos-config-path (expand-file-name "~/src/nixos-config")))
+    (if (file-directory-p nixos-config-path)
+        (progn
+          (magit-status nixos-config-path)
+          (delete-other-windows))
+      (message "nixos-config project not found at ~/src/nixos-config"))))
+(defun dl/magit-status-river ()
+  "Open magit status for River project in full frame."
+  (interactive)
+  (let ((river-path (expand-file-name "~/src/river")))
+    (if (file-directory-p river-path)
+        (progn
+          (magit-status river-path)
+          (delete-other-windows))
+      (message "River project not found at ~/src/river"))))
+
+;; Projectile leader key bindings
+(dl/leader-keys
+  "p"   '(:ignore t :which-key "projectile")
+  "pc"  '(dl/open-conductly-project :which-key "conductly")
+  "pn"  '(dl/open-nixos-config-project :which-key "nixos-config")
+  "pp"  '(counsel-projectile-switch-project :which-key "switch project")
+  "pf"  '(counsel-projectile-find-file :which-key "find file")
+  "ps"  '(counsel-projectile-rg :which-key "search project")
+  "pb"  '(counsel-projectile-switch-to-buffer :which-key "switch buffer")
+  "pd"  '(projectile-dired :which-key "project dired"))
+
+;; Git/Magit leader key bindings
+(dl/leader-keys
+  "g"   '(:ignore t :which-key "git")
+  "gc"  '(dl/magit-status-conductly :which-key "magit conductly")
+  "gn"  '(dl/magit-status-nixos-config :which-key "magit nixos-config")
+  "gr"  '(dl/magit-status-river :which-key "magit river")
+  "gg"  '(magit-status :which-key "magit status")
+  "gb"  '(magit-blame :which-key "magit blame")
+  "gl"  '(magit-log-buffer-file :which-key "magit log file"))
+
 ;; Gives me Ivy options in the Projectile menus
-(use-package counsel-projectile :after projectile)
+(use-package counsel-projectile 
+  :after projectile
+  :config
+  (counsel-projectile-mode 1))
 
-(defun enter-writing-mode ()
-  (load-theme 'doom-one-light t)
-  (when (bound-and-true-p treemacs-mode) (treemacs))
-  (add-hook 'window-buffer-change-functions 'check-leaving-buffer nil t))
+;; Project-wide search keybindings
+(defun my/swiper-project ()
+  "Search across all files in current project using ripgrep."
+  (interactive)
+  (counsel-rg nil (projectile-project-root)))
 
-(defun exit-writing-mode ()
-  (load-theme 'doom-one t)
-  (when (bound-and-true-p treemacs-mode) (treemacs))
-  (remove-hook 'window-buffer-change-functions 'check-leaving-buffer t))
+;; Search keybindings for projectile
+(dl/leader-keys
+  "/"   '(counsel-projectile-rg :which-key "search project")
+  "?"   '(my/swiper-project :which-key "search project (alt)")
+  "a"   '(:ignore t :which-key "search")
+  "aa"  '(swiper-all :which-key "search buffers") 
+  "ap"  '(counsel-projectile-rg :which-key "search project")
+  "ag"  '(counsel-projectile-grep :which-key "grep project")
+  "af"  '(counsel-projectile-find-file :which-key "find file")
+  "ad"  '(counsel-projectile-find-dir :which-key "find directory"))
 
-(add-hook 'writeroom-mode-hook
-          (lambda ()
-            (if writeroom-mode
-                (enter-writing-mode)
-                (exit-writing-mode))))
-
-(use-package writeroom-mode
-  :ensure t)
-
-(global-set-key (kbd "C-c w") 'writeroom-mode)
+;; Alternative global keybindings for quick access
+(global-set-key (kbd "C-c C-s") 'counsel-projectile-rg)
+(global-set-key (kbd "C-c s p") 'my/swiper-project)
+(global-set-key (kbd "C-c s a") 'swiper-all)
 
 (when (system-is-mac)
   (with-eval-after-load "ispell"
@@ -913,10 +1056,14 @@ Note the weekly scope of the command's precision.")
 (add-hook 'compilation-filter-hook 'colorize-compilation-buffer)
 
 (use-package tide
-  :ensure t
+  :ensure nil  ; Managed by Nix
   :after (typescript-mode company flycheck)
   :hook ((typescript-mode . tide-setup)
          (typescript-mode . tide-hl-identifier-mode)
+         (web-mode . (lambda ()
+                       (when (string-match "tsx?" (file-name-extension buffer-file-name))
+                         (tide-setup)
+                         (tide-hl-identifier-mode))))
          (before-save . tide-format-before-save)))
 
 (setq tide-format-options
@@ -976,7 +1123,7 @@ Note the weekly scope of the command's precision.")
 "lf" '(dl/lsp-find-references-other-window :which-key "find references")
 "lc" '(dl/lsp-find-implementation-other-window :which-key "find implementation")
 "ls" '(lsp-treemacs-symbols :which-key "list symbols")
-"lt" '(list-flycheck-errors :which-key "list errors")
+"lt" '(flycheck-list-errors :which-key "list errors")
 "lh" '(lsp-treemacs-call-hierarchy :which-key "call hierarchy")
 "lF" '(lsp-format-buffer :which-key "format buffer")
 "li" '(lsp-organize-imports :which-key "organize imports")
@@ -984,8 +1131,29 @@ Note the weekly scope of the command's precision.")
 "lr" '(lsp-rename :which-key "rename")
 "ld" '(dl/lsp-find-definition-other-window :which-key "goto definition"))
 
+(use-package dumb-jump
+  :ensure nil  ; Managed by Nix
+  :config
+  ;; Use ripgrep as the preferred searcher (it's the fastest)
+  (setq dumb-jump-prefer-searcher 'rg)
+  ;; Be smart about project context
+  (setq dumb-jump-force-searcher nil)
+  ;; Add to xref backend as a fallback
+  (add-hook 'xref-backend-functions #'dumb-jump-xref-activate)
+  ;; Silence the mode-line indicator
+  (setq dumb-jump-mode-line-format nil))
+
+;; Leader key bindings for dumb-jump
+(dl/leader-keys
+  "j"  '(:ignore t :which-key "jump")
+  "jj" '(dumb-jump-go :which-key "jump to definition")
+  "jo" '(dumb-jump-go-other-window :which-key "jump other window")
+  "jb" '(dumb-jump-back :which-key "jump back")
+  "jl" '(dumb-jump-quick-look :which-key "quick look")
+  "je" '(dumb-jump-go-prefer-external :which-key "jump external"))
+
 (use-package lsp-pyright
-  :ensure t
+  :ensure nil  ; Managed by Nix
   :hook (python-mode . (lambda ()
     (require 'lsp-pyright)
     (lsp-deferred))))  ; or lsp-deferred
@@ -993,7 +1161,7 @@ Note the weekly scope of the command's precision.")
 (setq python-indent-offset 2)
 
 (use-package blacken
-  :ensure t)
+  :ensure nil  ; Managed by Nix)
 
 (setq blacken-line-length '88)
 (setq blacken-allow-py36 t)
@@ -1014,7 +1182,16 @@ Note the weekly scope of the command's precision.")
   :mode (("README\\.md\\'" . gfm-mode)
     ("\\.md\\'" . markdown-mode)
     ("\\.markdown\\'" . markdown-mode))
-  :init (setq markdown-command "pandoc"))
+  :init (setq markdown-command "pandoc")
+  :config
+  ;; Enable syntax highlighting
+  (setq markdown-fontify-code-blocks-natively t)
+  ;; Enable inline code highlighting
+  (setq markdown-enable-highlighting-syntax t)
+  ;; Optional: customize faces for better visibility
+  (custom-set-faces
+   '(markdown-code-face ((t (:inherit fixed-pitch :background "#2d2d2d"))))
+   '(markdown-inline-code-face ((t (:inherit (font-lock-constant-face fixed-pitch) :background "#2d2d2d"))))))
 
 (add-to-list 'auto-mode-alist '("\\.mdx\\'" . markdown-mode))
 
@@ -1052,31 +1229,167 @@ Note the weekly scope of the command's precision.")
 (add-hook 'go-mode-hook 'dl/go-mode-hook)
 
 (use-package php-mode
-  :ensure t
+  :ensure nil  ; Managed by Nix
   :config
-    (add-hook 'php-mode-hook 'lsp-mode-deferred))
+    (add-hook 'php-mode-hook 'lsp-deferred))
 
-(require 'cl)
+;; Enhanced LSP configuration for PHP with PHPStan integration
+(use-package lsp-mode
+  :config
+  ;; Configure Phpactor for better PHP support with refactoring capabilities
+  (setq lsp-phpactor-path (executable-find "phpactor"))
+  
+  ;; Force phpactor to be the only PHP server
+  (with-eval-after-load 'lsp-php
+    ;; Disable all other PHP clients
+    (setq lsp-clients-php-iph-server-command nil)
+    (setq lsp-clients-php-server-command nil)
+    (setq lsp-disabled-clients '(iph php-ls psalm-ls php-serenata))
+    ;; Only enable phpactor
+    (setq lsp-enabled-clients '(phpactor)))
+  
+  ;; Configure lsp-mode file watch threshold if needed
+  (setq lsp-file-watch-threshold 2000)
+  
+  ;; Better completion
+  (setq lsp-completion-provider :company-capf)
+  (setq company-minimum-prefix-length 2)
+  
+  ;; Use flycheck for diagnostics to integrate with PHPStan
+  (setq lsp-diagnostics-provider :flycheck))
+
+;; Configure flycheck to run PHPStan
+(use-package flycheck
+  :ensure nil  ; Managed by Nix
+  :config
+  ;; Define PHPStan checker
+  (flycheck-define-checker phpstan
+    "PHP static analysis using PHPStan."
+    :command ("phpstan" "analyse" "--no-progress" "--error-format=raw" source-original)
+    :error-patterns
+    ((error line-start (file-name) ":" line ":" (message) line-end))
+    :modes php-mode)
+  
+  ;; Add PHPStan to PHP checkers - run after the built-in PHP checker
+  (add-to-list 'flycheck-checkers 'phpstan t)
+  (flycheck-add-next-checker 'php 'phpstan))
+
+;; PHP mode setup with flycheck and formatting
+(defun setup-php-development ()
+  "Setup PHP development environment with LSP, flycheck, and formatting."
+  ;; Force phpactor by disabling other clients before starting LSP
+  (setq-local lsp-disabled-clients '(iph php-ls))
+  (setq-local lsp-enabled-clients '(phpactor))
+  (lsp-deferred)
+  (flycheck-mode 1)
+  ;; Enable PHPStan checking
+  (when (executable-find "phpstan")
+    (flycheck-select-checker 'phpstan)))
+
+;; Add enhanced PHP mode hook
+(add-hook 'php-mode-hook #'setup-php-development)
+
+;; PHP formatting setup
+(require 'cl-lib)
+(require 'php-cs-fixer)
 (add-hook 'before-save-hook 'php-cs-fixer-before-save)
+
+;; PHP navigation and documentation
+(defun php-doc-at-point ()
+  "Look up PHP documentation for symbol at point."
+  (interactive)
+  (let ((symbol (thing-at-point 'symbol)))
+    (when symbol
+      (browse-url (format "https://www.php.net/manual/en/function.%s.php" 
+                         (replace-regexp-in-string "_" "-" symbol))))))
+
+;; PHP-specific keybindings
+(eval-after-load 'php-mode
+  '(progn
+     (define-key php-mode-map (kbd "C-c C-d") 'php-doc-at-point)
+     (define-key php-mode-map (kbd "C-c ! n") 'flycheck-next-error)
+     (define-key php-mode-map (kbd "C-c ! p") 'flycheck-previous-error)
+     (define-key php-mode-map (kbd "C-c ! l") 'flycheck-list-errors)
+     ;; Ctrl+Alt+L to fix PHP code formatting
+     (define-key php-mode-map (kbd "C-M-l") 'php-cs-fixer-fix)))
+
+;; Evil mode error navigation for PHP
+(with-eval-after-load 'evil
+  (evil-define-key 'normal php-mode-map
+    "]e" 'flycheck-next-error
+    "[e" 'flycheck-previous-error))
+
+;; PHP Leader key bindings
+(dl/leader-keys
+  "P"  '(:ignore t :which-key "php")
+  "Pc" '((lambda () (interactive) (compile "composer install")) :which-key "composer install")
+  "Pu" '((lambda () (interactive) (compile "composer update")) :which-key "composer update")
+  "Pf" '(php-cs-fixer-fix :which-key "fix code style")
+  "Ps" '((lambda () (interactive) 
+           (let ((default-directory (projectile-project-root)))
+             (compile "phpstan analyse --no-progress"))) :which-key "phpstan project")
+  "PS" '((lambda () (interactive) 
+           (compile (format "phpstan analyse --no-progress %s" (buffer-file-name)))) :which-key "phpstan file")
+  "Pd" '(php-doc-at-point :which-key "php documentation"))
+
 ;; Adjust auto-mode-alist to use php-mode for PHP files
 (add-to-list 'auto-mode-alist '("\\.php$" . php-mode))
 
-(use-package web-mode
-  :hook (web-mode . lsp-deferred))
+;; Modern tree-sitter support for better syntax highlighting
+(use-package tree-sitter
+  :ensure nil  ; Managed by Nix
+  :config
+  (global-tree-sitter-mode)
+  (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
 
-(add-to-list 'auto-mode-alist '("\\.jsx?$" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.tsx$" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.ts$" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.js$" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.mjs$" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.html$" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.vue\\'" . web-mode))
+(use-package tree-sitter-langs
+  :ensure nil  ; Managed by Nix
+  :after tree-sitter)
+
+;; Use built-in treesit for Emacs 29+ or fallback to tree-sitter
+(if (and (fboundp 'treesit-available-p) (treesit-available-p))
+    (progn
+      ;; Native tree-sitter modes for Emacs 29+
+      (use-package typescript-ts-mode
+        :mode (("\\.ts\\'" . typescript-ts-mode)
+               ("\\.tsx\\'" . tsx-ts-mode))
+        :hook ((typescript-ts-mode . lsp-deferred)
+               (tsx-ts-mode . lsp-deferred))))
+  ;; Fallback to web-mode with enhanced configuration
+  (progn
+    (use-package web-mode
+      :hook (web-mode . lsp-deferred)
+      :config
+      ;; Set content types for proper syntax highlighting
+      (setq web-mode-content-types-alist
+            '(("jsx" . "\\.js[x]?\\'")
+              ("jsx" . "\\.tsx\\'")))  ; Force TSX to use JSX content type
+      ;; Enable syntax highlighting features
+      (setq web-mode-enable-auto-pairing t)
+      (setq web-mode-enable-css-colorization t)
+      (setq web-mode-enable-current-element-highlight t)
+      (setq web-mode-enable-auto-quoting nil))
+    (add-to-list 'auto-mode-alist '("\\.jsx?$" . web-mode))
+    (add-to-list 'auto-mode-alist '("\\.tsx$" . web-mode))
+    (add-to-list 'auto-mode-alist '("\\.ts$" . web-mode))
+    (add-to-list 'auto-mode-alist '("\\.js$" . web-mode))
+    (add-to-list 'auto-mode-alist '("\\.mjs$" . web-mode))
+    (add-to-list 'auto-mode-alist '("\\.html$" . web-mode))
+    (add-to-list 'auto-mode-alist '("\\.vue\\'" . web-mode))))
 
 (defun web-mode-init-hook ()
   "Hooks for Web mode.  Adjust indent."
-  (setq web-mode-markup-indent-offset 2))
+  (setq web-mode-markup-indent-offset 2)
+  (setq web-mode-code-indent-offset 2)
+  (setq web-mode-css-indent-offset 2)
+  (setq web-mode-attr-indent-offset 2))
 (add-hook 'web-mode-hook  'web-mode-init-hook)
-(add-hook 'typescript-mode-hook #'lsp-deferred)
+
+;; TypeScript mode for non-TSX files if not using tree-sitter
+(unless (and (fboundp 'treesit-available-p) (treesit-available-p))
+  (use-package typescript-mode
+    :mode "\\.ts\\'"
+    :hook (typescript-mode . lsp-deferred)))
 
 ;; Keeps indentation organized across these modes
 (use-package prettier-js)
@@ -1089,20 +1402,16 @@ Note the weekly scope of the command's precision.")
 (use-package magit
   :commands (magit-status magit-get-current-branch)
   :config
-  ;; Enable vim-style navigation in Magit
+  ;; Force evil keybindings in magit
   (evil-set-initial-state 'magit-mode 'normal)
-  (evil-define-key 'normal magit-mode-map
-    "j" 'magit-section-forward
-    "k" 'magit-section-backward
-    "h" 'magit-section-hide
-    "l" 'magit-section-show
-    "n" 'magit-section-forward-sibling
-    "p" 'magit-section-backward-sibling
-    "J" 'magit-section-forward-sibling
-    "K" 'magit-section-backward-sibling
-    "gg" 'beginning-of-buffer
-    "G" 'end-of-buffer
-    "q" 'magit-mode-bury-buffer))
+  (evil-set-initial-state 'magit-status-mode 'normal)
+  (evil-set-initial-state 'magit-diff-mode 'normal)
+  (evil-set-initial-state 'magit-log-mode 'normal)
+  ;; Ensure evil-collection loads after magit
+  (require 'evil-collection)
+  (evil-collection-magit-setup)
+  ;; Configure magit to display in full frame
+  (setq magit-display-buffer-function #'magit-display-buffer-fullframe-status-v1))
 (define-key magit-hunk-section-map (kbd "RET") 'magit-diff-visit-file-other-window)
 (global-set-key (kbd "C-x G") 'magit-log-buffer-file)
 
@@ -1120,14 +1429,20 @@ Note the weekly scope of the command's precision.")
 
 (add-to-list 'auto-mode-alist '("\\.tf\\'" . terraform-mode))
 
-(use-package copilot
-  :straight (:host github :repo "zerolfx/copilot.el" :files ("dist" "*.el"))
-  :ensure t)
+;; Copilot configuration
+;; Note: Since copilot.el is not in standard package repos,
+;; you'll need to manually clone it:
+;; git clone https://github.com/zerolfx/copilot.el ~/.emacs.d/copilot.el
 
-(add-hook 'prog-mode-hook 'copilot-mode)
-
-(define-key copilot-completion-map (kbd "<tab>") 'copilot-accept-completion)
-(define-key copilot-completion-map (kbd "TAB") 'copilot-accept-completion)
+(when (file-exists-p "~/.emacs.d/copilot.el")
+  (add-to-list 'load-path "~/.emacs.d/copilot.el")
+  (require 'copilot nil t)
+  
+  (add-hook 'prog-mode-hook 'copilot-mode)
+  
+  (with-eval-after-load 'copilot
+    (define-key copilot-completion-map (kbd "<tab>") 'copilot-accept-completion)
+    (define-key copilot-completion-map (kbd "TAB") 'copilot-accept-completion)))
 
 (defvar dl/prompts-directory "~/.local/share/prompts"
   "Directory containing LLM prompt files.")
@@ -1196,16 +1511,91 @@ Note the weekly scope of the command's precision.")
 
 ;; Add leader key bindings for LLM prompts
 (dl/leader-keys
-  "c"   '(:ignore t :which-key "llm prompts")
-  "cs"  '(dl/llm-prompt-selector :which-key "select prompt")
-  "co"  '(dl/open-prompts-directory :which-key "open prompts dir")
-  "cn"  '(dl/create-new-prompt :which-key "new prompt"))
+  "i"   '(:ignore t :which-key "prompts")
+  "is"  '(dl/llm-prompt-selector :which-key "select prompt")
+  "io"  '(dl/open-prompts-directory :which-key "open prompts dir")
+  "in"  '(dl/create-new-prompt :which-key "new prompt"))
 
 ;; Optional: Global keybinding for quick access
 (global-set-key (kbd "C-c C-p") 'dl/llm-prompt-selector)
 
+;; Claude Code integration
+;; Note: Requires Claude Code CLI to be installed and available in PATH
+;; Also requires transient package (0.7.5+)
+
+;; Since claude-code.el is not in standard package repos,
+;; we'll clone it similar to copilot.el
+(when (executable-find "claude")
+  ;; Clone claude-code.el if it doesn't exist
+  (let ((claude-code-dir "~/.emacs.d/claude-code.el"))
+    (unless (file-exists-p claude-code-dir)
+      (message "Claude Code directory not found. Clone it with:")
+      (message "git clone https://github.com/stevemolitor/claude-code.el ~/.emacs.d/claude-code.el"))
+    
+    ;; Load claude-code if directory exists
+    (when (file-exists-p claude-code-dir)
+      (add-to-list 'load-path claude-code-dir)
+      (require 'claude-code nil t)
+      
+      ;; Enable claude-code-mode
+      (claude-code-mode)
+      
+      ;; Set up claude-code keybindings
+      ;; First unbind any existing 'c' binding, then set it as a prefix
+      (dl/leader-keys
+        "c" nil)  ; Explicitly unbind first
+      
+      (dl/leader-keys
+        "c"  '(:ignore t :which-key "claude")
+        "cc" '(claude-code :which-key "start claude")
+        "cs" '(claude-code-send-command :which-key "send command")
+        "cr" '(claude-code-send-region :which-key "send region")
+        "cm" '(claude-code-transient :which-key "transient menu"))
+      
+      ;; Also bind the command map to C-c c for compatibility
+      (define-key global-map (kbd "C-c c") claude-code-command-map)
+      
+      ;; Optional: Configure claude-code settings
+      (setq claude-code-terminal-backend 'eat)  ; or 'vterm' if you prefer
+      (setq claude-code-desktop-notifications t))))
+
+(defvar dl/org-files-directory "~/org"
+  "Directory containing personal org files.")
+
+(defun dl/open-org-file (filename)
+  "Open an org file from the org directory."
+  (interactive)
+  (let ((filepath (expand-file-name filename dl/org-files-directory)))
+    (if (file-exists-p filepath)
+        (find-file filepath)
+      (message "File not found: %s" filepath))))
+
+(defun dl/get-org-files ()
+  "Get list of org files from the org directory."
+  (when (file-directory-p dl/org-files-directory)
+    (directory-files dl/org-files-directory nil "\\.org$")))
+
+(defun dl/org-file-selector ()
+  "Select an org file from your org directory to open."
+  (interactive)
+  (let ((org-files (dl/get-org-files)))
+    (if org-files
+        (ivy-read "Select org file: "
+                  org-files
+                  :action (lambda (filename)
+                            (dl/open-org-file filename)))
+      (message "No org files found in %s" dl/org-files-directory))))
+
+;; Add leader key bindings for org files
+(dl/leader-keys
+  "f"   '(:ignore t :which-key "org files")
+  "ff"  '(dl/org-file-selector :which-key "find org file")
+  "fp"  '(dl/open-emacs-php-workflow :which-key "php workflow")
+  "fo"  '((lambda () (interactive) (dired dl/org-files-directory)) :which-key "open org dir")
+  "fr"  '(recentf-open-files :which-key "recent files"))
+
 (use-package which-key
-  :ensure t
+  :ensure nil  ; Managed by Nix
   :init
   (setq which-key-idle-delay 0.3
         which-key-idle-secondary-delay 0.1)
@@ -1213,7 +1603,7 @@ Note the weekly scope of the command's precision.")
   (which-key-mode))
 
 (use-package helpful
-  :ensure t
+  :ensure nil  ; Managed by Nix
   :commands (helpful-callable helpful-variable helpful-key)
   :bind
   ([remap describe-function] . helpful-callable)

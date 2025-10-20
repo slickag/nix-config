@@ -31,17 +31,16 @@
       (message "use-package installed successfully.")
     (error "Error: Failed to install use-package."))
   (setq use-package-verbose t)
-  (setq use-package-always-ensure t)
+  ;; Disable auto-installation since Nix handles packages
+  (setq use-package-always-ensure nil)
   (require 'use-package))
 
 ;; -------------------------
 ;; Environment Variables Setup
 ;; -------------------------
-(unless (package-installed-p 'exec-path-from-shell)
-  (package-refresh-contents)
-  (package-install 'exec-path-from-shell))
-
-(exec-path-from-shell-initialize)
+;; exec-path-from-shell is now managed by Nix
+(when (require 'exec-path-from-shell nil t)
+  (exec-path-from-shell-initialize))
 (use-package exec-path-from-shell
   :if (memq window-system '(mac ns x))
   :config
@@ -53,48 +52,7 @@
 (when (daemonp)
   (exec-path-from-shell-initialize))
 
-;; -------------------------
-;; Straight.el Setup
-;; -------------------------
-(setq straight-repository-branch "develop")
-(defvar bootstrap-version)
-(let ((bootstrap-file
-       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
-      (bootstrap-version 6))
-  (unless (file-exists-p bootstrap-file)
-    (with-current-buffer
-        (url-retrieve-synchronously
-         "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
-         'silent 'inhibit-cookies)
-      (goto-char (point-max))
-      (eval-print-last-sexp)))
-  (if (load bootstrap-file nil 'nomessage)
-      (message "Straight.el loaded successfully.")
-    (error "Error: Failed to load Straight.el.")))
-
-(setq straight-use-package-by-default t)
-
-;; Fix for f.el shortdoc issue in Emacs 30 - must be done before loading f.el
-(when (>= emacs-major-version 30)
-  ;; Define advice to filter out :noeval from shortdoc-add-function calls
-  (defun my/filter-shortdoc-args (group &rest args)
-    "Filter out :noeval from shortdoc arguments."
-    (let ((filtered-args nil)
-          (i 0))
-      (while (< i (length args))
-        (if (eq (nth i args) :noeval)
-            ;; Skip :noeval and its value
-            (setq i (+ i 2))
-          ;; Keep other arguments
-          (setq filtered-args (append filtered-args (list (nth i args))))
-          (setq i (1+ i))))
-      (cons group filtered-args)))
-  
-  ;; Apply the advice before shortdoc is loaded
-  (advice-add 'shortdoc-add-function :filter-args #'my/filter-shortdoc-args))
-
-;; Load org early to prevent version mismatch
-(straight-use-package 'org)
+;; No need for straight.el anymore - all packages managed by Nix
 
 ;; -------------------------
 ;; Window and UI Setup
@@ -140,7 +98,7 @@
     (error (message "Error occurred in Org mode setup."))))
 
 (use-package org
-  :straight nil  ; Use built-in org-mode, don't install via straight
+  :ensure nil  ; Use built-in org-mode
   :defer t
   :hook (org-mode . dl/org-mode-setup)
   :config
@@ -169,7 +127,7 @@
 ;; -------------------------
 ;; Load Org Config or Default
 ;; -------------------------
-(condition-case nil
+(condition-case err
     (progn
       (unless (file-exists-p org-config-file)
         (dl/download-default-config))
@@ -177,4 +135,12 @@
           (org-babel-load-file org-config-file)
         (org-babel-load-file default-config-file))
       (message "Configuration loaded successfully."))
-  (error (message "Error occurred while loading the configuration.")))
+  (error 
+    (message "Error occurred while loading the configuration: %s" (error-message-string err))
+    ;; Try to at least enable evil-mode if it's available
+    (when (fboundp 'evil-mode)
+      (evil-mode 1))
+    (when (fboundp 'general-create-definer)
+      (general-create-definer dl/leader-keys
+        :keymaps '(normal visual emacs)
+        :prefix ","))))

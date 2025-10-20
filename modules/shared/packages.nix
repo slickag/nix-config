@@ -1,11 +1,19 @@
 { pkgs, ... }:
 let
   # myPython = pkgs.python3.withPackages (ps: with ps; [
-    # slpp
-    # pip
-    # rich
-    # virtualenv
-    # black
+  #   slpp
+  #   pip
+  #   rich
+  #   mysql-connector
+  #   virtualenv
+  #   black
+  #   requests
+  #   faker
+  #   textual
+  #   pyqt5
+  #   pyyaml
+  #   feedparser
+  #   python-dateutil
   # ]);
 
   # myPHP = pkgs.php82.withExtensions ({ enabled, all }: enabled ++ (with all; [
@@ -19,9 +27,9 @@ with pkgs; [
 
   # A
   # act # Run Github actions locally
-  age # File encryption tool
-  age-plugin-yubikey # YubiKey plugin for age encryption
-  # alacritty # GPU-accelerated terminal emulator
+  # age # File encryption tool
+  # age-plugin-yubikey # YubiKey plugin for age encryption
+  # ghostty # GPU-accelerated terminal emulator
   # aspell # Spell checker
   # aspellDicts.en # English dictionary for aspell
 
@@ -46,10 +54,11 @@ with pkgs; [
   # F
   fd # Fast find alternative
   # ffmpeg # Multimedia framework
-  fswatch # File change monitor
+  # flyctl # Fly.io tools
   fzf # Fuzzy finder
 
   # G
+  # go # Go
   # gcc # GNU Compiler Collection
   gh # GitHub CLI
   git
@@ -67,6 +76,8 @@ with pkgs; [
   # imagemagick # Image manipulation toolkit
   iperf
   iterm2
+  # imagemagick # Image manipulation toolkit
+  # intelephense # PHP LSP server
 
   # J
   # jetbrains.phpstorm # PHP IDE
@@ -80,6 +91,9 @@ with pkgs; [
   # libfido2 # FIDO2 library
   # lla
   lsd
+  # linear-cli # Linear project management CLI
+  # lnav # Log file navigator
+  # libfido2 # FIDO2 library
 
   # M
   mkalias
@@ -91,12 +105,10 @@ with pkgs; [
   # nano
   # nanorc
   # ncurses # Terminal control library with terminfo database
+  # ncdu # Disk space utility
   neofetch # System information tool
   # ngrok # Secure tunneling service
-  # nodePackages.live-server # Development server with live reload
-  # nodePackages.nodemon # Node.js file watcher
-  # nodePackages.npm # Node package manager
-  # (hiPrio nodePackages.prettier) # Code formatter
+  # nodejs_20 # Node.js JavaScript runtime (includes npm)
 
   # O
   ookla-speedtest
@@ -105,14 +117,21 @@ with pkgs; [
   # P
   # pandoc # Document converter
   # php82Packages.composer # PHP dependency manager
-  # php82Packages.deployer # PHP deployment tool
+  # deployer # PHP deployment tool
   # php82Packages.php-cs-fixer # PHP code style fixer
+  # php82Packages.phpstan # PHP static analysis tool
+  # phpactor # PHP language server with better refactoring support  
   # phpunit # PHP testing framework
   pngquant # PNG compression tool
+
+  # Q
+  qt5.qtbase # Qt5 base library with platform plugins
 
   # R
   # ripgrep # Fast text search tool
   rsync
+  # ripgrep # Fast text search tool
+  # repomix # AI tooling
 
   # S
   # slack # Team communication app
@@ -137,6 +156,7 @@ with pkgs; [
   wget # File downloader
 
   # Z
+  zed-editor
   zip # ZIP archive creator
   # zsh-powerlevel10k # Zsh theme
 ] ++ myFonts

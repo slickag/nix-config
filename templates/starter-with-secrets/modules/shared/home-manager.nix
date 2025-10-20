@@ -8,7 +8,7 @@ let name = "%NAME%";
   zsh = {
     enable = true;
     autocd = false;
-    cdpath = [ "~/.local/share/src" ];
+    cdpath = [ "~/Projects" ];
     plugins = [
       {
           name = "powerlevel10k";
@@ -186,7 +186,8 @@ let name = "%NAME%";
         \ ]
 
       let g:startify_bookmarks = [
-        \ '~/.local/share/src',
+        \ '~/Projects',
+        \ '~/Documents',
         \ ]
 
       let g:airline_theme='bubblegum'
@@ -220,13 +221,6 @@ let name = "%NAME%";
         ];
       };
 
-      dynamic_padding = true;
-      decorations = "full";
-      title = "Terminal";
-      class = {
-        instance = "Alacritty";
-        general = "Alacritty";
-      };
 
       colors = {
         primary = {
@@ -261,6 +255,7 @@ let name = "%NAME%";
 
   ssh = {
     enable = true;
+    enableDefaultConfig = false;
     includes = [
       (lib.mkIf pkgs.stdenv.hostPlatform.isLinux
         "/home/${user}/.ssh/config_external"
@@ -270,6 +265,11 @@ let name = "%NAME%";
       )
     ];
     matchBlocks = {
+      "*" = {
+        # Set the default values we want to keep
+        sendEnv = [ "LANG" "LC_*" ];
+        hashKnownHosts = true;
+      };
       "github.com" = {
         identitiesOnly = true;
         identityFile = [

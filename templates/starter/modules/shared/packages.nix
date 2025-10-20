@@ -30,7 +30,7 @@ with pkgs; [
 
   # Encryption and security tools
   # _1password
-  age
+  # age
   # age-plugin-yubikey
   # gnupg
   # libfido2
@@ -78,7 +78,7 @@ with pkgs; [
   # nodePackages.nodemon
   # nodePackages.prettier
   # nodePackages.npm
-  # nodejs
+  # nodejs_24
 
   # Source code management, Git, GitHub tools
   gh
@@ -91,12 +91,26 @@ with pkgs; [
   # jetbrains.phpstorm
   # jq
   # ripgrep
-  # slack
   tree
   tmux
-  unrar
   unzip
   zsh-powerlevel10k
+  
+  # Development tools
+  curl
+  gh
+  terraform
+  kubectl
+  awscli2
+  lazygit
+  fzf
+  direnv
+  
+  # Programming languages and runtimes
+  go
+  rustc
+  cargo
+  openjdk
 
   # Python packages
   # black
