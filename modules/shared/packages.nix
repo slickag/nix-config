@@ -36,16 +36,20 @@ with pkgs; [
   # B
   bash-completion # Bash completion scripts
   bat # Cat clone with syntax highlighting
-  # btop # System monitor and process viewer
+  bat-extras.core
+  btop # System monitor and process viewer
 
   # C
   colima
   # coreutils # Basic file/text/shell utilities
 
   # D
+  delta
+  devbox
   # direnv # Environment variable management per directory
   difftastic # Structural diff tool
   # dockutil # Manage icons on the dock
+  dos2unix
   du-dust # Disk usage analyzer
 
   # E
@@ -88,6 +92,7 @@ with pkgs; [
   # killall # Kill processes by name
 
   # L
+  lftp
   # libfido2 # FIDO2 library
   # lla
   lsd
@@ -97,7 +102,8 @@ with pkgs; [
 
   # M
   mkalias
-  moar
+  moor
+  mosh
   # myPHP # Custom PHP with extensions
   # myPython # Custom Python with packages
 
@@ -156,7 +162,7 @@ with pkgs; [
   wget # File downloader
 
   # Z
-  zed-editor
+  # zed-editor
   zip # ZIP archive creator
   # zsh-powerlevel10k # Zsh theme
 ] ++ myFonts

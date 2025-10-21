@@ -1,4 +1,5 @@
-{ agenix, config, pkgs, ... }:
+# { agenix, config, pkgs, ... }:
+{ config, pkgs, ... }:
 let 
   user = "AG";
   # myEmacs = import ../../modules/shared/emacs.nix { inherit pkgs; };
@@ -8,7 +9,7 @@ in
     # ../../modules/darwin/secrets.nix
     ../../modules/darwin/home-manager.nix
     ../../modules/shared
-    agenix.darwinModules.default
+    # agenix.darwinModules.default
   ];
   # Setup user, packages, programs
   nix = {
@@ -19,6 +20,11 @@ in
       substituters = [ "https://nix-community.cachix.org" "https://cache.nixos.org" ];
       trusted-public-keys = [ "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=" ];
     };
+    gc = {
+      automatic = true;
+      interval = { Weekday = 0; Hour = 2; Minute = 0; };
+      options = "--delete-older-than 7d";
+    };
     # Turn this on to make command line easier
     extraOptions = ''
       experimental-features = nix-command flakes
@@ -27,7 +33,8 @@ in
   # Load configuration that is shared across systems
   environment.systemPackages = with pkgs; [
     # myEmacs
-    agenix.packages."${pkgs.system}".default
+    # agenix.packages."${pkgs.system}".default
+    vim
   ] ++ (import ../../modules/shared/packages.nix { inherit pkgs; });
 
   # launchd.user.agents = {
@@ -50,7 +57,7 @@ in
     # Turn off NIX_PATH warnings now that we're using flakes
     checks.verifyNixPath = false;
     primaryUser = user;
-    stateVersion = 4;
+    stateVersion = 6;
     defaults = {
       LaunchServices = {
         LSQuarantine = false;
@@ -61,6 +68,7 @@ in
         };
       };
       NSGlobalDomain = {
+        AppleInterfaceStyle = "Dark";
         AppleShowAllExtensions = true;
         AppleShowAllFiles = true;
         ApplePressAndHoldEnabled = false;
@@ -74,6 +82,7 @@ in
         NSAutomaticCapitalizationEnabled = false;
         NSAutomaticSpellingCorrectionEnabled = false;
 
+        "com.apple.mouse.tapBehavior" = 1;
         "com.apple.sound.beep.volume" = 0.0;
         "com.apple.sound.beep.feedback" = 0;
         "com.apple.swipescrolldirection" = false;

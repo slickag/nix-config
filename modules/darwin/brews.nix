@@ -1,33 +1,80 @@
 _:
 
 [
+  # "btop"
+  # "ccache"
+  # "cirruslabs/cli/softnet"
+  # "cirruslabs/cli/tart"
+  # "container-compose"
   "coreutils"
-  "git-lfs"
+  "gat"
+  # "git-lfs"
   "ipatool"
   "ipsw"
+  "launch"
+  "lla"
+  "maclaunch"
   "mas"
-  {
-    name = "git";
-    args = [ "HEAD" ];
-  }
+  # "media-info"
+  "nano"
+  # "hashicorp/tap/packer"
+  "pipx"
+  # "python-tk@3.13"
+  # "qbittorrent-cli"
+  # "qt"
+  "riff"
+  # "rustup"
+  # "unxip"
+  "uxp"
+  # "wireguard-tools"
+  # "yasm"
+  "otsge/stash/aria2"
+  "otsge/stash/curl"
+  # "otsge/stash/forgejo"
+  "otsge/stash/rclone"
+  # "otsge/stash/taproom"
   # {
-  #   name = "nanorc";
+  #   name = "gallery-dl";
+  #   args = [ "HEAD" ];
+  # }
+  # {
+  #   name = "git";
+  #   args = [ "HEAD" ];
+  # }
+  # {
+  #   name = "mosh";
   #   args = [ "HEAD" ];
   # }
   {
-    name = "upx";
+    name = "nanorc";
     args = [ "HEAD" ];
   }
-  {
-    name = "cloudflare/cloudflare/curl";
-    args = [ "HEAD" ];
-  }
-  {
-    name = "slickag/knickknacks/forgejo";
-    args = [ "HEAD" ];
-  }
-  {
-    name = "slickag/knickknacks/rclone";
-    args = [ "HEAD" ];
-  }
+  # {
+  #   name = "pipx";
+  #   args = [ "HEAD" ];
+  # }
+  # {
+  #   name = "upx";
+  #   args = [ "HEAD" ];
+  # }
+  # {
+  #   name = "otsge/stash/aria2";
+  #   args = [ "HEAD" ];
+  # }
+  # {
+  #   name = "otsge/stash/curl";
+  #   args = [ "HEAD" ];
+  # }
+  # {
+  #   name = "otsge/stash/forgejo";
+  #   args = [ "HEAD" ];
+  # }
+  # {
+  #   name = "otsge/stash/rclone";
+  #   args = [ "HEAD" ];
+  # }
+  # {
+  #   name = "otsge/stash/taproom";
+  #   args = [ "HEAD" ];
+  # }
 ]

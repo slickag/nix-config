@@ -22,7 +22,7 @@ _:
 
   # F
   # "font-meslo-lg-nerd-font"
-  "fuse-t"
+  "otsge/stash/fuse-t"
 
   # G
   # "google-chrome@dev"
@@ -46,10 +46,10 @@ _:
   # "ngrok"
 
   # O
-  "orbstack"
+  # "orbstack"
 
   # P
-  "slickag/knickknacks/parsec-startup"
+  # "otsge/stash/parsec-startup"
   # "postico"
 
   # Q
@@ -57,8 +57,8 @@ _:
   # R
   "rar"
   # "raycast"
-  # "slickag/knickknacks/rsyncui"
-  "rustdesk"
+  # "otsge/stash/rsyncui"
+  # "rustdesk"
 
   # S
   # "slack"
@@ -76,6 +76,7 @@ _:
   # "vlc"
 
   # W
+  "wickenico/wailbrew/wailbrew"
   # "wireshark"
 
   # X

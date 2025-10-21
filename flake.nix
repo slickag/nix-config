@@ -3,7 +3,10 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     flake-utils.url = "github:numtide/flake-utils";
-    home-manager.url = "github:nix-community/home-manager";
+    home-manager = {
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     mac-app-util.url = "github:hraban/mac-app-util";
     # agenix.url = "github:ryantm/agenix";
     # claude-desktop = {
@@ -29,10 +32,6 @@
       url = "github:homebrew/homebrew-cask";
       flake = false;
     };
-    homebrew-command-not-found = {
-      url = "github:homebrew/homebrew-command-not-found";
-      flake = false;
-    };
     homebrew-cirruslabs = {
       url = "github:cirruslabs/homebrew-cli";
       flake = false;
@@ -45,8 +44,8 @@
       url = "github:hashicorp/homebrew-tap";
       flake = false;
     };
-    homebrew-scoop = {
-      url = "github:slickag/homebrew-scoop";
+    homebrew-stash = {
+      url = "github:otsge/homebrew-stash";
       flake = false;
     };
     homebrew-wailbrew = {
@@ -66,7 +65,7 @@
     #   inputs.nixpkgs.follows = "nixpkgs";
     # };
   };
-  outputs = { self, darwin, nix-homebrew, homebrew-core, homebrew-cask, homebrew-command-not-found, homebrew-cirruslabs, homebrew-hashicorp, homebrew-scoop, homebrew-wailbrew, home-manager, mac-app-util, nixpkgs, flake-utils } @inputs:
+  outputs = { self, darwin, nix-homebrew, homebrew-core, homebrew-cask, homebrew-cirruslabs, homebrew-hashicorp, homebrew-stash, homebrew-wailbrew, home-manager, mac-app-util, nixpkgs, flake-utils } @inputs:
     let
       user = "AG";
       linuxSystems = [ "x86_64-linux" "aarch64-linux" ];
@@ -153,11 +152,10 @@
                 taps = {
                   "homebrew/homebrew-core" = homebrew-core;
                   "homebrew/homebrew-cask" = homebrew-cask;
-                  "homebrew/homebrew-command-not-found" = homebrew-command-not-found;
                   "cirruslabs/homebrew-cli" = homebrew-cirruslabs;
                   # "cloudflare/homebrew-cloudflare" = homebrew-cloudflare;
                   "hashicorp/homebrew-tap" = homebrew-hashicorp;
-                  "slickag/homebrew-scoop" = homebrew-scoop;
+                  "slickag/homebrew-stash" = homebrew-stash;
                   "wickenico/homebrew-wailbrew" = homebrew-wailbrew;
                 };
                 mutableTaps = false;

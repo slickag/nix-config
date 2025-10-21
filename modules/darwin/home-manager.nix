@@ -3,16 +3,16 @@
 let
   user = "AG";
   # myEmacsLauncher = pkgs.writeScript "emacs-launcher.command" ''
-    # #!/bin/sh
-      # emacsclient -c -n &
+  #   #!/bin/sh
+  #     emacsclient -c -n &
   # '';
-  sharedFiles = import ../shared/files.nix { inherit config pkgs; };
+  # sharedFiles = import ../shared/files.nix { inherit config pkgs; };
   # additionalFiles = import ./files.nix { inherit user config pkgs; };
 in
 {
-  imports = [
-    ./dock
-  ];
+  # imports = [
+  #   ./dock
+  # ];
 
   users.users.${user} = {
     name     = "${user}";
@@ -42,27 +42,28 @@ in
       upgrade = true;
     };
     masApps = {
-      "developer" = 640199958;
+      # "developer" = 640199958;
       # "hidden-bar" = 1452453066;
       "previewtext" = 1660037028;
-      "testflight" = 899247664;
+      # "testflight" = 899247664;
       # "wireguard" = 1451685025;
     };
   };
 
   home-manager = {
     useGlobalPkgs = true;
+    useUserPackages = true;
     users.${user} = { pkgs, config, lib, ... }:
       {
         home = {
           enableNixpkgsReleaseCheck = false;
           packages = pkgs.callPackage ./packages.nix {};
-          file = lib.mkMerge [
-            sharedFiles
-            # additionalFiles
-            # { "emacs-launcher.command".source = myEmacsLauncher; }
-          ];
-          stateVersion = "23.11";
+          # file = lib.mkMerge [
+          #   sharedFiles
+          #   additionalFiles
+          #   { "emacs-launcher.command".source = myEmacsLauncher; }
+          # ];
+          stateVersion = "25.05";
         };
         programs = {} // import ../shared/home-manager.nix { inherit config pkgs lib; };
         manual.manpages.enable = false;
@@ -70,37 +71,37 @@ in
   };
 
   # Fully declarative dock using the latest from Nix Stor
-  local.dock = {
-    enable   = false;
-    username = user;
-    # entries  = [
-      # { path = "/Applications/Slack.app/"; }
-      # { path = "/System/Applications/Messages.app/"; }
-      # { path = "${pkgs.alacritty}/Applications/Alacritty.app/"; }
-      # { path = "/System/Applications/Music.app/"; }
-      # { path = "/System/Applications/Photos.app/"; }
-      # { path = "/System/Applications/Photo Booth.app/"; }
-      # { path = "/System/Applications/TV.app/"; }
-      # { path = "${pkgs.jetbrains.phpstorm}/Applications/PhpStorm.app/"; }
-      # { path = "/Applications/TablePlus.app/"; }
-      # { path = "/Applications/Claude.app/"; }
-      # { path = "/Applications/Discord.app/"; }
-      # { path = "/Applications/TickTick.app/"; }
-      # { path = "/System/Applications/Home.app/"; }
-      # {
-        # path    = toString myEmacsLauncher;
-        # section = "others";
-      # }
-      # {
-        # path    = "${config.users.users.${user}.home}/.local/share/";
-        # section = "others";
-        # options = "--sort name --view grid --display folder";
-      # }
-      # {
-        # path    = "${config.users.users.${user}.home}/.local/share/downloads";
-        # section = "others";
-        # options = "--sort name --view grid --display stack";
-      # }
-    # ];
-  };
+  # local.dock = {
+  #   enable   = false;
+  #   username = user;
+  #   entries  = [
+  #     { path = "/Applications/Slack.app/"; }
+  #     { path = "/System/Applications/Messages.app/"; }
+  #     { path = "${pkgs.alacritty}/Applications/Alacritty.app/"; }
+  #     { path = "/System/Applications/Music.app/"; }
+  #     { path = "/System/Applications/Photos.app/"; }
+  #     { path = "/System/Applications/Photo Booth.app/"; }
+  #     { path = "/System/Applications/TV.app/"; }
+  #     { path = "${pkgs.jetbrains.phpstorm}/Applications/PhpStorm.app/"; }
+  #     { path = "/Applications/TablePlus.app/"; }
+  #     { path = "/Applications/Claude.app/"; }
+  #     { path = "/Applications/Discord.app/"; }
+  #     { path = "/Applications/TickTick.app/"; }
+  #     { path = "/System/Applications/Home.app/"; }
+  #     {
+  #       path    = toString myEmacsLauncher;
+  #       section = "others";
+  #     }
+  #     {
+  #       path    = "${config.users.users.${user}.home}/.local/share/";
+  #       section = "others";
+  #       options = "--sort name --view grid --display folder";
+  #     }
+  #     {
+  #       path    = "${config.users.users.${user}.home}/.local/share/downloads";
+  #       section = "others";
+  #       options = "--sort name --view grid --display stack";
+  #     }
+  #   ];
+  # };
 }
