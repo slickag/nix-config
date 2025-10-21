@@ -23,6 +23,9 @@ jobs:
         run: |
           echo "Disk usage before cleanup:"
           df -h
+
+          cd /opt
+          find . -maxdepth 1 -mindepth 1 '!' -path ./containerd '!' -path ./actionarchivecache '!' -path ./runner '!' -path ./runner-cache -exec rm -rf '{}' ';'
           
           # Remove large packages that exist
           packages_to_remove=(
