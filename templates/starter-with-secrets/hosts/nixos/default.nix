@@ -294,12 +294,12 @@ let user = "%USER%";
     jetbrains-mono
     font-awesome
     noto-fonts
-    noto-fonts-emoji
+    noto-fonts-color-emoji
   ];
 
   environment.systemPackages = with pkgs; [
     agenix.packages."${pkgs.system}".default # "x86_64-linux"
-    gitAndTools.gitFull
+    gitFull
     inetutils
   ];
 

@@ -212,12 +212,10 @@ let name = "John Faust";
   git = {
     enable = true;
     # ignores = [ "*.swp" ];
-    # userName = name;
-    # userEmail = email;
     # lfs = {
     #   enable = true;
     # };
-    # extraConfig = {
+    # settings = {
     #   init.defaultBranch = "main";
     #   core = {
 	  #   editor = "vim";
@@ -226,6 +224,8 @@ let name = "John Faust";
     #   commit.gpgsign = true;
     #   pull.rebase = true;
     #   rebase.autoStash = true;
+    #   user.email = email;
+    #   user.name = name;
     # };
   };
 
