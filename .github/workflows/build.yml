@@ -18,4 +18,4 @@ jobs:
     uses: ./.github/workflows/build-template.yml
     with:
       template: 'starter'
-      arch: 'x86_64-linux'
+      arch: 'aarch64-darwin'

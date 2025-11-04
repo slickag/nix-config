@@ -12,55 +12,55 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     outputs:
       build-success: ${{ steps.build-result.outputs.success }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
 
-      - name: Free disk space
-        run: |
-          echo "Disk usage before cleanup:"
-          df -h
+      # - name: Free disk space
+      #   run: |
+      #     echo "Disk usage before cleanup:"
+      #     df -h
 
-          cd /opt
-          find . -maxdepth 1 -mindepth 1 '!' -path ./containerd '!' -path ./actionarchivecache '!' -path ./runner '!' -path ./runner-cache -exec rm -rf '{}' ';'
+      #     cd /opt
+      #     find . -maxdepth 1 -mindepth 1 '!' -path ./containerd '!' -path ./actionarchivecache '!' -path ./runner '!' -path ./runner-cache -exec rm -rf '{}' ';'
           
-          # Remove large packages that exist
-          packages_to_remove=(
-            azure-cli
-            google-chrome-stable
-            firefox
-            powershell
-            mono-devel
-          )
+      #     # Remove large packages that exist
+      #     packages_to_remove=(
+      #       azure-cli
+      #       google-chrome-stable
+      #       firefox
+      #       powershell
+      #       mono-devel
+      #     )
           
-          for pkg in "${packages_to_remove[@]}"; do
-            if dpkg -l | grep -q "^ii  $pkg "; then
-              echo "Removing $pkg..."
-              sudo apt-get remove -y "$pkg" || true
-            fi
-          done
+      #     for pkg in "${packages_to_remove[@]}"; do
+      #       if dpkg -l | grep -q "^ii  $pkg "; then
+      #         echo "Removing $pkg..."
+      #         sudo apt-get remove -y "$pkg" || true
+      #       fi
+      #     done
           
-          # Remove packages by pattern (ignore errors for missing packages)
-          sudo apt-get remove -y '^ghc-.*' 2>/dev/null || true
-          sudo apt-get remove -y '^dotnet-.*' 2>/dev/null || true  
-          sudo apt-get remove -y '^llvm-.*' 2>/dev/null || true
+      #     # Remove packages by pattern (ignore errors for missing packages)
+      #     sudo apt-get remove -y '^ghc-.*' 2>/dev/null || true
+      #     sudo apt-get remove -y '^dotnet-.*' 2>/dev/null || true  
+      #     sudo apt-get remove -y '^llvm-.*' 2>/dev/null || true
           
-          sudo apt-get autoremove -y
-          sudo apt-get clean
+      #     sudo apt-get autoremove -y
+      #     sudo apt-get clean
           
-          # Remove large directories
-          sudo rm -rf /usr/share/dotnet
-          sudo rm -rf /usr/local/lib/android
-          sudo rm -rf /opt/ghc
-          sudo rm -rf /opt/hostedtoolcache/CodeQL
-          sudo rm -rf /usr/local/.ghcup
-          sudo rm -rf /usr/share/swift
+      #     # Remove large directories
+      #     sudo rm -rf /usr/share/dotnet
+      #     sudo rm -rf /usr/local/lib/android
+      #     sudo rm -rf /opt/ghc
+      #     sudo rm -rf /opt/hostedtoolcache/CodeQL
+      #     sudo rm -rf /usr/local/.ghcup
+      #     sudo rm -rf /usr/share/swift
           
-          echo "Disk usage after cleanup:"
-          df -h
+      #     echo "Disk usage after cleanup:"
+      #     df -h
 
       - name: Install Nix
         uses: nixbuild/nix-quick-install-action@master
@@ -73,7 +73,7 @@ jobs:
 
       - name: Initialize Nix Flake
         run: |
-          mkdir -p my-config && cd my-config
+          mkdir -p /Users/runner/work/nix-config/nix-config/my-config && cd /Users/runner/work/nix-config/nix-config/my-config
           nix flake --extra-experimental-features 'nix-command flakes' init -t github:slickag/nix-config#${{ inputs.template }}
 
       - name: Apply CI User Info
@@ -82,33 +82,33 @@ jobs:
           export USERNAME="ciuser"
           export GIT_EMAIL="ciuser@example.com"
           export GIT_NAME="CI User"
-          export PRIMARY_IFACE="eth0"
-          export HOST_NAME="ci-host"
-          export BOOT_DISK="sda"
+          # export PRIMARY_IFACE="eth0"
+          # export HOST_NAME="ci-host"
+          # export BOOT_DISK="sda"
 
           # Function to replace tokens in each file
           replace_tokens() {
             local file="$1"
             if [[ $(basename "$file") != "apply" ]]; then
-              sed -i -e "s/%USER%/$USERNAME/g" -e "s/%EMAIL%/$GIT_EMAIL/g" -e "s/%NAME%/$GIT_NAME/g" \
-                     -e "s/%INTERFACE%/$PRIMARY_IFACE/g" -e "s/%DISK%/$BOOT_DISK/g" -e "s/%HOST%/$HOST_NAME/g" "$file"
+              LC_ALL=C LANG=C sed -i '' -e "s/%USER%/$USERNAME/g" -e "s/%EMAIL%/$GIT_EMAIL/g" -e "s/%NAME%/$GIT_NAME/g" "$file"
+          #            \ -e "s/%INTERFACE%/$PRIMARY_IFACE/g" -e "s/%DISK%/$BOOT_DISK/g" -e "s/%HOST%/$HOST_NAME/g" "$file"
             fi
           }
 
           # Traverse directories and replace tokens in each Nix file
           export -f replace_tokens
-          cd /home/runner/work/nix-config/nix-config/my-config
+          cd /Users/runner/work/nix-config/nix-config/my-config
           find . -type f -exec bash -c 'replace_tokens "$0"' {} \;
 
           echo "$USERNAME" > /tmp/username.txt
 
       - name: Build Nix Flake
         run: |
-          cd /home/runner/work/nix-config/nix-config/my-config
+          cd /Users/runner/work/nix-config/nix-config/my-config
           git add .
 
           echo "Building Flake..."
-          if nix build --extra-experimental-features 'nix-command flakes' /home/runner/work/nix-config/nix-config/my-config#nixosConfigurations."${{ inputs.arch }}".config.system.build.toplevel; then
+          if nix build --extra-experimental-features 'nix-command flakes' /Users/runner/work/nix-config/nix-config/my-config#darwinConfigurations."${{ inputs.arch }}".config.system.build.toplevel; then
             echo "success=true" >> $GITHUB_ENV
           else
             echo "Build failed, listing flake.lock for debugging:"
