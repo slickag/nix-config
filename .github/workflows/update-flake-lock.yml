@@ -16,14 +16,18 @@ jobs:
     runs-on: macos-latest
     needs: check-build
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
       # - name: Free disk space
+      #   uses: wimpysworld/nothing-but-nix@main
       #   run: |
       #     echo "Disk usage before cleanup:"
       #     df -h
 
       #     cd /opt
       #     find . -maxdepth 1 -mindepth 1 '!' -path ./containerd '!' -path ./actionarchivecache '!' -path ./runner '!' -path ./runner-cache -exec rm -rf '{}' ';'
-          
+
       #     # Remove large packages that exist
       #     packages_to_remove=(
       #       azure-cli
@@ -32,22 +36,22 @@ jobs:
       #       powershell
       #       mono-devel
       #     )
-          
+
       #     for pkg in "${packages_to_remove[@]}"; do
       #       if dpkg -l | grep -q "^ii  $pkg "; then
       #         echo "Removing $pkg..."
       #         sudo apt-get remove -y "$pkg" || true
       #       fi
       #     done
-          
+
       #     # Remove packages by pattern (ignore errors for missing packages)
       #     sudo apt-get remove -y '^ghc-.*' 2>/dev/null || true
-      #     sudo apt-get remove -y '^dotnet-.*' 2>/dev/null || true  
+      #     sudo apt-get remove -y '^dotnet-.*' 2>/dev/null || true
       #     sudo apt-get remove -y '^llvm-.*' 2>/dev/null || true
-          
+
       #     sudo apt-get autoremove -y
       #     sudo apt-get clean
-          
+
       #     # Remove large directories
       #     sudo rm -rf /usr/share/dotnet
       #     sudo rm -rf /usr/local/lib/android
@@ -55,12 +59,9 @@ jobs:
       #     sudo rm -rf /opt/hostedtoolcache/CodeQL
       #     sudo rm -rf /usr/local/.ghcup
       #     sudo rm -rf /usr/share/swift
-          
+
       #     echo "Disk usage after cleanup:"
       #     df -h
-
-      - name: Checkout repository
-        uses: actions/checkout@v5
 
       - name: Install Nix
         uses: nixbuild/nix-quick-install-action@master

@@ -1,0 +1,17 @@
+name: Merge Flake Lock
+
+on:
+  pull_request:
+    paths:
+      - '**.lock'
+
+jobs:
+  merge-flake:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - id: merge-pr
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN_FOR_UPDATES }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: gh pr merge "${PR_NUMBER}" --repo "slickag/nix-config" --squash
