@@ -35,7 +35,7 @@ in
     enable = true;
     brews = pkgs.callPackage ./brews.nix {};
     casks = pkgs.callPackage ./casks.nix {};
-    caskArgs.no_quarantine = true;
+    # caskArgs.no_quarantine = true;
     onActivation = {
       autoUpdate = true;
       cleanup = "zap";
@@ -63,7 +63,7 @@ in
           #   additionalFiles
           #   { "emacs-launcher.command".source = myEmacsLauncher; }
           # ];
-          stateVersion = "25.05";
+          stateVersion = "25.11";
         };
         programs = {} // import ../shared/home-manager.nix { inherit config pkgs lib; };
         manual.manpages.enable = false;

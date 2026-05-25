@@ -2,6 +2,7 @@
   description = "Starter Configuration for MacOS and NixOS";
 
   inputs = {
+    flake-utils.url = "github:numtide/flake-utils";
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     home-manager.url = "github:nix-community/home-manager";
     darwin = {
@@ -9,11 +10,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nix-homebrew = {
-      url = "github:zhaofengli-wip/nix-homebrew";
-    };
-    homebrew-bundle = {
-      url = "github:homebrew/homebrew-bundle";
-      flake = false;
+      url = "github:zhaofengli/nix-homebrew";
     };
     homebrew-core = {
       url = "github:homebrew/homebrew-core";
@@ -23,20 +20,28 @@
       url = "github:homebrew/homebrew-cask";
       flake = false;
     };
-    homebrew-cloudflare = {
-      url = "github:cloudflare/homebrew-cloudflare";
+    homebrew-cirruslabs = {
+      url = "github:cirruslabs/homebrew-cli";
       flake = false;
     };
+    # homebrew-cloudflare = {
+    #   url = "github:cloudflare/homebrew-cloudflare";
+    #   flake = false;
+    # };
     homebrew-fuse = {
       url = "github:gromgit/homebrew-fuse";
       flake = false;
     };
-    homebrew-services = {
-      url = "github:homebrew/homebrew-services";
+    homebrew-hashicorp = {
+      url = "github:hashicorp/homebrew-tap";
       flake = false;
     };
-    homebrew-knickknacks = {
-      url = "github:slickag/homebrew-knickknacks";
+    homebrew-brews = {
+      url = "github:otsge/homebrew-brews";
+      flake = false;
+    };
+    homebrew-casks = {
+      url = "github:otsge/homebrew-casks";
       flake = false;
     };
     disko = {
@@ -45,7 +50,7 @@
     };
   };
 
-  outputs = { self, darwin, nix-homebrew, homebrew-bundle, homebrew-core, homebrew-cask, homebrew-cloudflare, homebrew-fuse, homebrew-services, homebrew-knickknacks, home-manager, nixpkgs, disko } @inputs:
+  outputs = inputs@{ self, darwin, nix-homebrew, home-manager, flake-utils, nixpkgs, disko, ... }:
     let
       user = "%USER%";
       linuxSystems = [ "x86_64-linux" "aarch64-linux" ];
@@ -95,9 +100,11 @@
       darwinConfigurations = nixpkgs.lib.genAttrs darwinSystems (system: let
         user = "%USER%";
       in
+      # darwinConfigurations = nixpkgs.lib.genAttrs darwinSystems (system:
         darwin.lib.darwinSystem {
           inherit system;
           specialArgs = inputs;
+          # specialArgs = inputs // { inherit user; };
           modules = [
             home-manager.darwinModules.home-manager
             nix-homebrew.darwinModules.nix-homebrew
@@ -108,18 +115,22 @@
                 # Apple Silicon Only: Also install Homebrew under the default Intel prefix for Rosetta 2
                 # enableRosetta = true;
                 taps = {
-                  "homebrew/homebrew-core" = homebrew-core;
-                  "homebrew/homebrew-cask" = homebrew-cask;
-                  "homebrew/homebrew-bundle" = homebrew-bundle;
-                  "cloudflare/homebrew-cloudflare" = homebrew-cloudflare;
-                  "gromgit/homebrew-fuse" = homebrew-fuse;
-                  "homebrew/homebrew-services" = homebrew-services;
-                  "slickag/homebrew-knickknacks" = homebrew-knickknacks;
+                  "homebrew/homebrew-core" = inputs.homebrew-core;
+                  "homebrew/homebrew-cask" = inputs.homebrew-cask;
+                  "cirruslabs/homebrew-cli" = inputs.homebrew-cirruslabs;
+                  # "cloudflare/homebrew-cloudflare" = inputs.homebrew-cloudflare;
+                  "gromgit/homebrew-fuse" = inputs.homebrew-fuse;
+                  "hashicorp/homebrew-tap" = inputs.homebrew-hashicorp;
+                  "otsge/homebrew-brews" = inputs.homebrew-brews;
+                  "otsge/homebrew-casks" = inputs.homebrew-casks;
                 };
                 mutableTaps = false;
                 autoMigrate = true;
               };
             }
+            ({config, ...}: {
+              homebrew.taps = builtins.attrNames config.nix-homebrew.taps;
+            })
             ./hosts/darwin
           ];
         }

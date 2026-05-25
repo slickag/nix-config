@@ -12,7 +12,7 @@ _:
     args = [ "HEAD" ];
   }
   {
-    name = "slickag/knickknacks/forgejo";
+    name = "otsge/brews/forgejo";
     args = [ "HEAD" ];
   }
 ]

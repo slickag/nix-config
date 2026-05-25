@@ -29,8 +29,13 @@ in
     enable = true;
     brews = pkgs.callPackage ./brews.nix {};
     casks = pkgs.callPackage ./casks.nix {};
-    caskArgs.no_quarantine = true;
-    onActivation.cleanup = "zap";
+    # caskArgs.no_quarantine = true;
+    onActivation = {
+      autoUpdate = true;
+      cleanup = "zap";
+      extraFlags = [ "--verbose" ];
+      upgrade = true;
+    };
 
     # These app IDs are from using the mas CLI app
     # mas = mac app store
@@ -61,7 +66,7 @@ in
           # additionalFiles
           # { "emacs-launcher.command".source = myEmacsLauncher; }
         # ];
-        stateVersion = "23.11";
+        stateVersion = "25.11";
       };
 
       programs = {} // import ../shared/home-manager.nix { inherit config pkgs lib; };

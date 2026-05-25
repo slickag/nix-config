@@ -44,28 +44,32 @@
       url = "github:hashicorp/homebrew-tap";
       flake = false;
     };
-    homebrew-stash = {
-      url = "github:otsge/homebrew-stash";
+    homebrew-brews = {
+      url = "github:otsge/homebrew-brews";
       flake = false;
     };
-    homebrew-wailbrew = {
-      url = "github:wickenico/homebrew-wailbrew";
+    homebrew-casks = {
+      url = "github:otsge/homebrew-casks";
       flake = false;
     };
+    # homebrew-wailbrew = {
+    #   url = "github:wickenico/homebrew-wailbrew";
+    #   flake = false;
+    # };
     # disko = {
     #   url = "github:nix-community/disko";
     #   inputs.nixpkgs.follows = "nixpkgs";
     # };
     # secrets = {
-      # url = "git+ssh://git@github.com/slickag/nix-secrets.git";
-      # flake = false;
+    #   url = "git+ssh://git@github.com/slickag/nix-secrets.git";
+    #   flake = false;
     # };
     # chaotic = {
     #   url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
     #   inputs.nixpkgs.follows = "nixpkgs";
     # };
   };
-  outputs = { self, darwin, nix-homebrew, homebrew-core, homebrew-cask, homebrew-cirruslabs, homebrew-hashicorp, homebrew-stash, homebrew-wailbrew, home-manager, mac-app-util, nixpkgs, flake-utils } @inputs:
+  outputs = inputs@{ self, darwin, nix-homebrew, home-manager, mac-app-util, nixpkgs, flake-utils, ... }:
     let
       user = "AG";
       linuxSystems = [ "x86_64-linux" "aarch64-linux" ];
@@ -129,9 +133,6 @@
           inherit system;
           specialArgs = inputs // { inherit user; };
           modules = [
-            ({ config, ... }: {
-              homebrew.taps = builtins.attrNames config.nix-homebrew.taps;
-            })
             mac-app-util.darwinModules.default
             home-manager.darwinModules.home-manager
             (
@@ -150,18 +151,21 @@
                 # Apple Silicon Only: Also install Homebrew under the default Intel prefix for Rosetta 2
                 # enableRosetta = true;
                 taps = {
-                  "homebrew/homebrew-core" = homebrew-core;
-                  "homebrew/homebrew-cask" = homebrew-cask;
-                  "cirruslabs/homebrew-cli" = homebrew-cirruslabs;
-                  # "cloudflare/homebrew-cloudflare" = homebrew-cloudflare;
-                  "hashicorp/homebrew-tap" = homebrew-hashicorp;
-                  "slickag/homebrew-stash" = homebrew-stash;
-                  "wickenico/homebrew-wailbrew" = homebrew-wailbrew;
+                  "homebrew/homebrew-core" = inputs.homebrew-core;
+                  "homebrew/homebrew-cask" = inputs.homebrew-cask;
+                  "cirruslabs/homebrew-cli" = inputs.homebrew-cirruslabs;
+                  # "cloudflare/homebrew-cloudflare" = inputs.homebrew-cloudflare;
+                  "hashicorp/homebrew-tap" = inputs.homebrew-hashicorp;
+                  "otsge/homebrew-brews" = inputs.homebrew-brews;
+                  "otsge/homebrew-casks" = inputs.homebrew-casks;
                 };
                 mutableTaps = false;
                 autoMigrate = true;
               };
             }
+            ({config, ...}: {
+              homebrew.taps = builtins.attrNames config.nix-homebrew.taps;
+            })
             ./hosts/darwin
           ];
         }

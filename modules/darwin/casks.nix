@@ -22,7 +22,7 @@ _:
 
   # F
   # "font-meslo-lg-nerd-font"
-  "otsge/stash/fuse-t"
+  "otsge/casks/fuse-t"
 
   # G
   # "google-chrome@dev"
@@ -49,7 +49,7 @@ _:
   # "orbstack"
 
   # P
-  # "otsge/stash/parsec-startup"
+  # "otsge/casks/parsec-startup"
   # "postico"
 
   # Q
@@ -57,7 +57,7 @@ _:
   # R
   "rar"
   # "raycast"
-  # "otsge/stash/rsyncui"
+  # "otsge/casks/rsyncui"
   # "rustdesk"
 
   # S
@@ -76,7 +76,7 @@ _:
   # "vlc"
 
   # W
-  "wickenico/wailbrew/wailbrew"
+  # "wickenico/wailbrew/wailbrew"
   # "wireshark"
 
   # X

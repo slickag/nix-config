@@ -28,11 +28,11 @@ _:
   "uxp"
   # "wireguard-tools"
   # "yasm"
-  "otsge/stash/aria2"
-  "otsge/stash/curl"
-  # "otsge/stash/forgejo"
-  "otsge/stash/rclone"
-  # "otsge/stash/taproom"
+  "otsge/brews/aria2"
+  "otsge/brews/curl"
+  # "otsge/brews/forgejo"
+  "otsge/brews/rclone"
+  # "otsge/brews/taproom"
   # {
   #   name = "gallery-dl";
   #   args = [ "HEAD" ];
@@ -58,23 +58,23 @@ _:
   #   args = [ "HEAD" ];
   # }
   # {
-  #   name = "otsge/stash/aria2";
+  #   name = "otsge/brews/aria2";
   #   args = [ "HEAD" ];
   # }
   # {
-  #   name = "otsge/stash/curl";
+  #   name = "otsge/brews/curl";
   #   args = [ "HEAD" ];
   # }
   # {
-  #   name = "otsge/stash/forgejo";
+  #   name = "otsge/brews/forgejo";
   #   args = [ "HEAD" ];
   # }
   # {
-  #   name = "otsge/stash/rclone";
+  #   name = "otsge/brews/rclone";
   #   args = [ "HEAD" ];
   # }
   # {
-  #   name = "otsge/stash/taproom";
+  #   name = "otsge/brews/taproom";
   #   args = [ "HEAD" ];
   # }
 ]

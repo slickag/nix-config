@@ -50,12 +50,12 @@ let user = "%USER%"; in
   system = {
     checks.verifyNixPath = false;
     primaryUser = user;
-    stateVersion = 5;
+    stateVersion = 6;
 
     defaults = {
-      LaunchServices = {
-        LSQuarantine = false;
-      };
+      # LaunchServices = {
+      #   LSQuarantine = false;
+      # };
 
       CustomSystemPreferences = {
         "com.apple.timemachine.HelperAgent" = {
