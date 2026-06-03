@@ -3,16 +3,19 @@ _:
 [
   "coreutils"
   "mas"
-  {
-    name = "rclone";
-    args = [ "HEAD" ];
-  }
-  {
-    name = "cloudflare/cloudflare/curl";
-    args = [ "HEAD" ];
-  }
-  {
-    name = "otsge/brews/forgejo";
-    args = [ "HEAD" ];
-  }
+  "otsge/brews/rclone"
+  "otsge/brews/curl"
+  "otsge/brews/forgejo"
+  # {
+  #   name = "otsge/brews/rclone";
+  #   args = [ "HEAD" ];
+  # }
+  # {
+  #   name = "otsge/brews/curl";
+  #   args = [ "HEAD" ];
+  # }
+  # {
+  #   name = "otsge/brews/forgejo";
+  #   args = [ "HEAD" ];
+  # }
 ]

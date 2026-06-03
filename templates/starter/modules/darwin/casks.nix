@@ -26,6 +26,7 @@ _:
   "font-meslo-lg-nerd-font"
   "iterm2@beta"
   "rar"
+  "otsge/casks/fuse-t"
 
   # Entertainment Tools
   # "steam"

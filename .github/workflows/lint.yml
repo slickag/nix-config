@@ -23,7 +23,7 @@ jobs:
       lint-success: ${{ steps.build-result.outputs.success }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@main
 
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@main

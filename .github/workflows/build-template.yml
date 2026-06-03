@@ -12,12 +12,12 @@ on:
 
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: macos-26
     outputs:
       build-success: ${{ steps.build-result.outputs.success }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@main
 
       # - name: Free disk space
       #   uses: wimpysworld/nothing-but-nix@main
