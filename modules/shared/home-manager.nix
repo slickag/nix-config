@@ -144,10 +144,9 @@ let name = "John Faust";
   #         esac
   #     }
       
-  #     # Tmux alias for conductly devenv session
+  #     # Tmux aliases for devenv sessions
+  #     alias atlas='tmux -S /run/user/1000/tmux-atlas attach -t atlas'
   #     alias conductly='tmux -S /run/user/1000/tmux-conductly attach -t conductly'
-      
-  #     # Tmux alias for river devenv session
   #     alias river='tmux -S /run/user/1000/tmux-river attach -t river'
 
   #     # macOS-style open command using Nautilus
@@ -350,6 +349,13 @@ let name = "John Faust";
   #         x = 24;
   #         y = 24;
   #       };
+  #     };
+
+  #     # Fix for shell path when launching from desktop
+  #     # When launching from desktop, $SHELL may point to /bin/zsh instead of
+  #     # the Nix-managed shell, causing environment issues
+  #     terminal.shell = {
+  #       program = "${pkgs.zsh}/bin/zsh";
   #     };
 
   #     font = {

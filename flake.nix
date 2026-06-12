@@ -7,15 +7,23 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    mac-app-util.url = "github:hraban/mac-app-util";
     # agenix.url = "github:ryantm/agenix";
-    # claude-desktop = {
-    #   url = "github:k3d3/claude-desktop-linux-flake";
-    #   inputs = {
-    #     nixpkgs.follows = "nixpkgs";
-    #     flake-utils.follows = "flake-utils";
-    #   };
-    # };
+    claude-desktop = {
+      url = "github:k3d3/claude-desktop-linux-flake";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-utils.follows = "flake-utils";
+      };
+    };
+    claude-code = {
+      url = "github:sadjow/claude-code-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    plasma-manager = {
+      url = "github:nix-community/plasma-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    mac-app-util.url = "github:hraban/mac-app-util";
     darwin = {
       url = "github:nix-darwin/nix-darwin/master";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -44,12 +52,16 @@
       url = "github:hashicorp/homebrew-tap";
       flake = false;
     };
-    homebrew-brews = {
-      url = "github:otsge/homebrew-brews";
+    homebrew-draft = {
+      url = "github:otsge/homebrew-draft";
       flake = false;
     };
-    homebrew-casks = {
-      url = "github:otsge/homebrew-casks";
+    homebrew-keg = {
+      url = "github:otsge/homebrew-keg";
+      flake = false;
+    };
+    homebrew-tap = {
+      url = "github:otsge/homebrew-tap";
       flake = false;
     };
     # homebrew-wailbrew = {
@@ -69,7 +81,8 @@
     #   inputs.nixpkgs.follows = "nixpkgs";
     # };
   };
-  outputs = inputs@{ self, darwin, nix-homebrew, home-manager, mac-app-util, nixpkgs, flake-utils, ... }:
+  outputs = inputs@{ self, darwin, claude-desktop, claude-code, nix-homebrew, home-manager, mac-app-util, plasma-manager, nixpkgs, flake-utils, ... }:
+  # outputs = { self, darwin, claude-desktop, claude-code, nix-homebrew, homebrew-bundle, homebrew-core, homebrew-cask, home-manager, plasma-manager, nixpkgs, flake-utils, disko, agenix, secrets, chaotic } @inputs:
     let
       user = "AG";
       linuxSystems = [ "x86_64-linux" "aarch64-linux" ];
@@ -154,10 +167,10 @@
                   "homebrew/homebrew-core" = inputs.homebrew-core;
                   "homebrew/homebrew-cask" = inputs.homebrew-cask;
                   "cirruslabs/homebrew-cli" = inputs.homebrew-cirruslabs;
-                  # "cloudflare/homebrew-cloudflare" = inputs.homebrew-cloudflare;
                   "hashicorp/homebrew-tap" = inputs.homebrew-hashicorp;
-                  "otsge/homebrew-brews" = inputs.homebrew-brews;
-                  "otsge/homebrew-casks" = inputs.homebrew-casks;
+                  "otsge/homebrew-draft" = inputs.homebrew-draft;
+                  "otsge/homebrew-keg" = inputs.homebrew-keg;
+                  "otsge/homebrew-tap" = inputs.homebrew-tap;
                 };
                 mutableTaps = false;
                 autoMigrate = true;
@@ -170,25 +183,27 @@
           ];
         }
       );
-      nixosConfigurations = nixpkgs.lib.genAttrs linuxSystems (system:
-        nixpkgs.lib.nixosSystem {
-          inherit system;
-          specialArgs = inputs // { inherit user; };
-          modules = [
-            # disko.nixosModules.disko
-            # chaotic.nixosModules.default
-            home-manager.nixosModules.home-manager {
-              home-manager = {
-                # sharedModules = [ plasma-manager.homeModules.plasma-manager ]; 
-                useGlobalPkgs = true;
-                useUserPackages = true;
-                users.${user} = { config, pkgs, lib, ... }:
-                  import ./modules/nixos/home-manager.nix { inherit config pkgs lib inputs; };
-              };
-            }
-            ./hosts/nixos
-          ];
-        }
-      );
+      nixosConfigurations = 
+        # Platform-based configurations (current behavior)
+        nixpkgs.lib.genAttrs linuxSystems (system:
+          nixpkgs.lib.nixosSystem {
+            inherit system;
+            specialArgs = inputs // { inherit user; };
+            modules = [
+              # disko.nixosModules.disko
+              # chaotic.nixosModules.default
+              home-manager.nixosModules.home-manager {
+                home-manager = {
+                  sharedModules = [ plasma-manager.homeModules.plasma-manager ]; 
+                  useGlobalPkgs = true;
+                  useUserPackages = true;
+                  users.${user} = { config, pkgs, lib, ... }:
+                    import ./modules/nixos/home-manager.nix { inherit config pkgs lib inputs; };
+                };
+              }
+              ./hosts/nixos
+            ];
+          }
+        );
     };
 }

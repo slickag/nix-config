@@ -48,11 +48,16 @@ shared-packages ++ [
   _1password-gui # Password manager
 
 ] ++ lib.optionals (pkgs ? cider-appimage) [
+  obsidian-appimage # Note taking application
   cider-appimage # Apple Music client
 ] ++ [
   
   cliphist # Clipboard history manager for Wayland
-  
+
+  docker-compose # Docker Compose tool
+
+  ninja # Fast build system
+
   tableplus-appimage # Database management tool
 
   bluez # Bluetooth
@@ -63,7 +68,7 @@ shared-packages ++ [
 
   # chromedriver # Chrome webdriver for testing (commented out due to nodejs version conflict)
 
-  inputs.claude-desktop.packages."${pkgs.system}".claude-desktop-with-fhs
+  #inputs.claude-desktop.packages."${pkgs.system}".claude-desktop-with-fhs
 
   discord # Voice and text chat
 
@@ -73,8 +78,9 @@ shared-packages ++ [
   winetricks # Wine configuration helper
   vulkan-tools # Vulkan utilities
   gamemode # Optimize system performance for games
-  wowup-appimage # Game addon manager
-
+] ++ lib.optionals (pkgs ? curseforge-appimage) [
+  curseforge-appimage # Game addon manager
+] ++ [
   gimp # Image editor
   glow # Terminal markdown viewer
   google-chrome # Web browser
@@ -85,6 +91,8 @@ shared-packages ++ [
   imv # Lightweight Wayland image viewer
   
   keepassxc # Password manager
+
+  qalculate-qt # Powerful calculator with unit conversions and symbolic math
 
   pavucontrol # Pulse audio controls
   playerctl # Control media players from command line
@@ -121,6 +129,8 @@ shared-packages ++ [
   xwayland # X11 compatibility layer for Wayland
 
   mariadb # mysql client
+  newrelic-cli # New Relic CLI
+  sentry-cli # Sentry CLI
   
   # Terminal animations
   cava # Console-based audio visualizer

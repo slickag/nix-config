@@ -40,6 +40,7 @@ with pkgs; [
   btop # System monitor and process viewer
 
   # C
+  # claude-code # Anthropic's AI coding assistant (native binary, from sadjow/claude-code-nix)
   colima
   # coreutils # Basic file/text/shell utilities
 
@@ -50,7 +51,7 @@ with pkgs; [
   difftastic # Structural diff tool
   # dockutil # Manage icons on the dock
   dos2unix
-  du-dust # Disk usage analyzer
+  dust # Disk usage analyzer
 
   # E
   eza
@@ -90,6 +91,7 @@ with pkgs; [
 
   # K
   # killall # Kill processes by name
+  # kubectl # Kubernetes CLI
 
   # L
   lftp
@@ -112,9 +114,9 @@ with pkgs; [
   # nanorc
   # ncurses # Terminal control library with terminfo database
   # ncdu # Disk space utility
-  neofetch # System information tool
+  # neofetch # System information tool
   # ngrok # Secure tunneling service
-  # nodejs_20 # Node.js JavaScript runtime (includes npm)
+  # nodejs_24 # Node.js JavaScript runtime (includes npm)
 
   # O
   ookla-speedtest
@@ -125,7 +127,7 @@ with pkgs; [
   # php82Packages.composer # PHP dependency manager
   # deployer # PHP deployment tool
   # php82Packages.php-cs-fixer # PHP code style fixer
-  # php82Packages.phpstan # PHP static analysis tool
+  # phpstan # PHP static analysis tool
   # phpactor # PHP language server with better refactoring support  
   # phpunit # PHP testing framework
   pngquant # PNG compression tool

@@ -71,6 +71,8 @@ let name = "%NAME%";
       enable = true;
     };
     settings = {
+      user.name = name;
+      user.email = email;
       init.defaultBranch = "main";
       core = {
 	    editor = "vim";
@@ -79,8 +81,6 @@ let name = "%NAME%";
       commit.gpgsign = true;
       pull.rebase = true;
       rebase.autoStash = true;
-      user.email = email;
-      user.name = name;
     };
   };
 
@@ -208,6 +208,13 @@ let name = "%NAME%";
           x = 24;
           y = 24;
         };
+      };
+
+      # Fix for shell path when launching from desktop
+      # When launching from desktop, $SHELL may point to /bin/zsh instead of
+      # the Nix-managed shell, causing environment issues
+      terminal.shell = {
+        program = "${pkgs.zsh}/bin/zsh";
       };
 
       font = {

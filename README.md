@@ -28,17 +28,18 @@ Check out the step-by-step commands below to get started!
   - [Disclaimer](#disclaimer)
   - [Layout](#layout)
   - [Installing](#installing)
-    - [For macOS (October 2025)](#for-macos-october-2025)
+    - [For macOS (May 2026)](#for-macos-may-2026)
       - [1. Install dependencies](#1-install-dependencies)
       - [2. Install Nix](#2-install-nix)
-      - [3. Initialize a starter template](#3-initialize-a-starter-template)
-      - [4. Make apps executable](#4-make-apps-executable)
-      - [5. Apply your current user info](#5-apply-your-current-user-info)
-      - [6. Decide what packages to install](#6-decide-what-packages-to-install)
-      - [7. Review your shell configuration](#7-review-your-shell-configuration)
-      - [8. Optional: Setup secrets](#8-optional-setup-secrets)
-      - [9. Install configuration](#9-install-configuration)
-      - [10. Make changes](#10-make-changes)
+      - [3. Enable flakes and nix-command](#3-enable-flakes-and-nix-command)
+      - [4. Initialize a starter template](#4-initialize-a-starter-template)
+      - [5. Make apps executable](#5-make-apps-executable)
+      - [6. Apply your current user info](#6-apply-your-current-user-info)
+      - [7. Decide what packages to install](#7-decide-what-packages-to-install)
+      - [8. Review your shell configuration](#8-review-your-shell-configuration)
+      - [9. Optional: Setup secrets](#9-optional-setup-secrets)
+      - [10. Install configuration](#10-install-configuration)
+      - [11. Make changes](#11-make-changes)
     - [For NixOS](#for-nixos)
       - [1. Burn and use the latest ISO](#1-burn-and-use-the-latest-iso)
       - [2. Optional: Setup secrets](#2-optional-setup-secrets)
@@ -129,7 +130,7 @@ Some folks don't like this. If this is you, turn back now!
 ```
 
 ## Installing
-## For macOS (October 2025)
+## For macOS (May 2026)
 This configuration supports both Intel and Apple Silicon Macs.
 
 ### 1. Install dependencies
@@ -185,7 +186,7 @@ mkdir -p nixos-config && cd nixos-config && nix flake --extra-experimental-featu
 
 ### 5. Make [apps](https://github.com/dustinlyons/nixos-config/tree/main/apps) executable
 ```sh
-find apps/$(uname -m | sed 's/arm64/aarch64/')-darwin -type f \( -name apply -o -name build -o -name build-switch -o -name create-keys -o -name copy-keys -o -name check-keys -o -name rollback \) -exec chmod +x {} \;
+find apps/$(uname -m | sed 's/arm64/aarch64/')-darwin -type f \( -name apply -o -name build -o -name build-switch -o -name clean -o -name create-keys -o -name copy-keys -o -name check-keys -o -name rollback \) -exec chmod +x {} \;
 ```
 
 ### 6. Apply your current user info
@@ -525,14 +526,14 @@ Interested in contributing to this project? Here's how you can help:
 This project is released under the [BSD-3-Clause license](https://github.com/dustinlyons/nixos-config/blob/main/LICENSE).
 
 ### Support
-Did you find my project useful? Your support is appreciated.
-
+If this project has been useful, consider supporting it.
 
 <a href="https://www.buymeacoffee.com/dustinlyons1" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
+
+I maintain this configuration in my spare time. I also build software for music and performing arts schools to manage scheduling, billing, and student records—if you know a teacher or studio owner, feel free to share [Conductly](https://conductly.com).
 
 ### Stars
 
 > "All we have to decide is what to do with the time that is given us." - J.R.R. Tolkien
 
 [![Star History Chart](https://api.star-history.com/svg?repos=dustinlyons/nixos-config&type=Date)](https://star-history.com/#dustinlyons/nixos-config&Date)
-
